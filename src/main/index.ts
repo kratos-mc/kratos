@@ -8,11 +8,19 @@ app.whenReady().then(() => {
   /**
    * Preload the application
    */
+
+  const userData = path.resolve(app.getPath("appData"), app.name, "web-cache");
+  app.setPath("userData", userData);
+  logger.info(`UserData path: ${userData}`);
   logger.info(`Application directory: ${app.getAppPath()}`);
+  logger.info(
+    `Launcher data directory: ${getLauncherWorkspace().getDirectory()}`
+  );
 
   /**
-   * Render
+   * Render a main launcher window
    */
+  logger.info("Initializing the main window");
   const mainLauncherWindow = new MainLauncherWindow({
     webPreferences: {
       preload: path.resolve(app.getAppPath(), "dist", "preload.js"),
