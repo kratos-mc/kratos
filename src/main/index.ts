@@ -1,7 +1,7 @@
 import { app } from "electron";
 import { MainLauncherWindow } from "./window";
 import * as path from "path";
-import { isDevelopment } from "./app";
+import { getLauncherWorkspace, isDevelopment } from "./app";
 import { logger } from "./logger/logger";
 
 app.whenReady().then(() => {
@@ -31,7 +31,7 @@ app.whenReady().then(() => {
     mainLauncherWindow.browserWindow.loadURL("http://localhost:1234");
   } else {
     mainLauncherWindow.browserWindow.loadFile(
-      path.join(app.getAppPath(), "dist", "render", "index.html")
+      path.resolve(app.getAppPath(), "dist", "render", "index.html")
     );
   }
 });
