@@ -1,0 +1,83 @@
+{
+  "name": "kratos",
+  "version": "1.0.0",
+  "main": "dist/main/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build-preload": "swc src/preload.ts --out-file dist/preload.js --config-file .swc/preload.swcrc.json",
+    "build-main": "swc src/main --out-dir dist --config-file .swc/main.swcrc.json",
+    "build-render": "parcel build ./src/render/index.html --no-cache --dist-dir dist/render --public-url ./",
+    "build": "rimraf ./dist && npm run build-render && npm run build-preload && npm run build-main",
+    "start": "electron .",
+    "dev-preload": "swc src/preload.ts -w --out-file dist/preload.js --config-file .swc/preload.swcrc.json",
+    "dev-render": "parcel ./src/render/index.html --no-cache --dist-dir dist/render",
+    "dev-main": "wait-on file:./dist/preload.js && wait-on tcp:1234 && nodemon -e ts,js --watch ./src/main --exec \"swc src/main -w --out-dir dist --config-file .swc/main.swcrc.json\"",
+    "dev-electron": "wait-on file:./dist/main && nodemon --watch ./dist/main --exec \"npm run start\"",
+    "dev": "cross-env NODE_ENV=development concurrently -c \"auto\" \"npm:dev-*\"",
+    "test-e2e": "cross-env NODE_ENV=production npm run build && playwright test test/e2e",
+    "make": "rimraf ./out && electron-forge make"
+  },
+  "targets": {
+    "main": false,
+    "default": {}
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "out": "dist"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "electron_quick_start"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "electron-log": "^4.4.8",
+    "kratos-core": "^0.2.0"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.1.0",
+    "@electron-forge/maker-deb": "^6.1.0",
+    "@electron-forge/maker-rpm": "^6.1.0",
+    "@electron-forge/maker-squirrel": "^6.1.0",
+    "@electron-forge/maker-zip": "^6.1.0",
+    "@playwright/test": "^1.32.1",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.44",
+    "@types/react": "^18.0.31",
+    "@types/react-dom": "^18.0.11",
+    "chokidar": "^3.5.3",
+    "concurrently": "^8.0.1",
+    "cross-env": "^7.0.3",
+    "electron": "^23.2.1",
+    "nodemon": "^2.0.22",
+    "parcel": "^2.8.3",
+    "playwright": "^1.32.1",
+    "process": "^0.11.10",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rimraf": "^4.4.1",
+    "swc-node": "^1.0.0",
+    "typescript": "^5.0.3",
+    "wait-on": "^7.0.1"
+  }
+}
