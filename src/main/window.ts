@@ -1,28 +1,32 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 
-export class LauncherWindow {
-  public browserWindow: BrowserWindow;
-  private readonly id: string;
+export type WindowId = "main" | "dev";
 
-  constructor(
-    id: string,
-    browserOptions?: Electron.BrowserWindowConstructorOptions
+export class BrowserWindowManager {
+  private windowMap: Map<WindowId, BrowserWindow> = new Map();
+
+  public hasBrowserWindow(id: WindowId) {
+    return this.windowMap.has(id);
+  }
+
+  public createBrowserWindow(
+    id: WindowId,
+    options?: BrowserWindowConstructorOptions
   ) {
-    this.id = id;
-    this.browserWindow = new BrowserWindow(browserOptions);
+    let b = new BrowserWindow(options);
+    if (this.hasBrowserWindow(id)) {
+      throw new Error(`The window with id ${id} already exists.`);
+    }
+    this.windowMap.set(id, b);
+    return b;
   }
 
-  /**
-   * The launcher window id
-   * @returns the current id of the launcher window
-   */
-  public getId() {
-    return this.id;
-  }
-}
+  public getBrowserWindow(id: WindowId) {
+    const w = this.windowMap.get(id);
+    if (w === undefined) {
+      throw new Error(`Cannot found window with id: ${id}`);
+    }
 
-export class MainLauncherWindow extends LauncherWindow {
-  constructor(browserOptions?: Electron.BrowserViewConstructorOptions) {
-    super("main", browserOptions);
+    return w;
   }
 }

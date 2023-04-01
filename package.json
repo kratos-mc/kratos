@@ -10,10 +10,10 @@
     "build": "rimraf ./dist && npm run build-render && npm run build-preload && npm run build-main",
     "start": "electron .",
     "dev-preload": "swc src/preload.ts -w --out-file dist/preload.js --config-file .swc/preload.swcrc.json",
-    "dev-render": "parcel ./src/render/*.html --no-cache --dist-dir dist/render",
+    "dev-render": "parcel ./src/render/**/*.html --no-cache --dist-dir dist/render",
     "dev-main": "wait-on file:./dist/preload.js && wait-on tcp:1234 && nodemon -e ts,js --watch ./src/main --exec \"swc src/main -w --out-dir dist --config-file .swc/main.swcrc.json\"",
     "dev-electron": "wait-on file:./dist/main && nodemon --watch ./dist/main --exec \"npm run start\"",
-    "dev": "cross-env NODE_ENV=development concurrently -c \"auto\" \"npm:dev-*\"",
+    "dev": "cross-env NODE_ENV=development concurrently -k -c \"auto\" \"npm:dev-*\"",
     "test-e2e": "cross-env NODE_ENV=production npm run build && playwright test test/e2e",
     "make": "rimraf ./out && electron-forge make"
   },
