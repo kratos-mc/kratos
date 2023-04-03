@@ -34,12 +34,7 @@ app.whenReady().then(() => {
    * Load the main window
    * and resolve url (or file)
    */
-  let mainWindow: BrowserWindow = initBrowserWindow("main", {
-    webPreferences: {
-      preload: getAppPreload(),
-    },
-  });
-  mainWindow.loadURL(getRenderAssetURL("index.html"));
+  let mainBrowser = loadMainBrowser();
 
   /**
    * Load development toolkit
@@ -65,4 +60,36 @@ app.whenReady().then(() => {
   // Load an IPC main register
   logger.info("Initializing ipc");
   loadIpcListener(getBrowserWindowManager());
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      loadMainBrowser();
+    }
+  });
+});
+
+function loadMainBrowser() {
+  let mainWindow: BrowserWindow = initBrowserWindow("main", {
+    webPreferences: {
+      preload: getAppPreload(),
+    },
+  });
+  mainWindow.loadURL(getRenderAssetURL("index.html"));
+  return mainWindow;
+}
+
+/**
+ * Forcibly destroy all electron app before quit the application
+ */
+app.on("before-quit", () => {
+  for (let window of getBrowserWindowManager().getAllWindows()) {
+    window.destroy();
+  }
+});
+
+/**
+ * Close all if Windows or linux system quit all windows.
+ */
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
 });
