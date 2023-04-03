@@ -56,6 +56,11 @@ app.whenReady().then(() => {
   });
   devWindow.loadURL(getRenderAssetURL("dev.html"));
   devWindow.hide();
+  devWindow.on("close", (e) => {
+    e.preventDefault();
+
+    devWindow.hide();
+  });
 
   // Load an IPC main register
   loadIpcListener(getBrowserWindowManager());
