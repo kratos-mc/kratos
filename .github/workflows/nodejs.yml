@@ -58,4 +58,4 @@ jobs:
         if: matrix.platform.os != 'ubuntu-latest'
 
       # Clean up everything after test
-      - run: yarn run clean
+      - run: yarn cache clean
