@@ -29,4 +29,8 @@ export class BrowserWindowManager {
 
     return w;
   }
+
+  public getAllWindows() {
+    return this.windowMap.values();
+  }
 }
