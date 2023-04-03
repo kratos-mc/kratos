@@ -7,5 +7,5 @@ contextBridge.exposeInMainWorld("versions", {
 });
 
 contextBridge.exposeInMainWorld("utils", {
-  openDevTools: () => ipcRenderer.send("util:open-dev-tool"),
+  openDevTools: (options?) => ipcRenderer.send("util:open-dev-tool", options),
 });
