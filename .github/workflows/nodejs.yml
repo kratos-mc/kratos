@@ -38,14 +38,24 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "yarn"
+
+      # Install and build
       - run: yarn install --frozen-lockfile
-
       - run: yarn run build --if-present
-      - run: yarn run test-unit
 
+      # Run unit test
+      - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn run test-unit
+        if: matrix.platform.os == 'ubuntu-latest'
+
+      - run: yarn run test-unit
+        if: matrix.platform.os != 'ubuntu-latest'
+
+      # Run e2e testing
       - run: xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- yarn run test-e2e
         if: matrix.platform.os == 'ubuntu-latest'
+
       - run: yarn run test-e2e
         if: matrix.platform.os != 'ubuntu-latest'
+
       # Clean up everything after test
-      - run: yarn run clean
+      - run: yarn cache clean
