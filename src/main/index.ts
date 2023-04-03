@@ -63,5 +63,6 @@ app.whenReady().then(() => {
   });
 
   // Load an IPC main register
+  logger.info("Initializing ipc");
   loadIpcListener(getBrowserWindowManager());
 });
