@@ -5,3 +5,7 @@ contextBridge.exposeInMainWorld("versions", {
   chrome: () => process.versions.chrome,
   electron: () => process.versions.electron,
 });
+
+contextBridge.exposeInMainWorld("utils", {
+  openDevTools: (options?) => ipcRenderer.send("util:open-dev-tool", options),
+});

@@ -1,7 +1,15 @@
-import { app } from "electron";
-import { MainLauncherWindow } from "./window";
+import { app, BrowserWindow } from "electron";
+import { Menu } from "electron/main";
 import * as path from "path";
-import { getLauncherWorkspace, isDevelopment } from "./app";
+import {
+  getAppPreload,
+  getBrowserWindowManager,
+  getLauncherWorkspace,
+  getRenderAssetURL,
+  initBrowserWindow,
+  isDevelopment,
+} from "./app";
+import { loadIpcListener } from "./ipc";
 import { logger } from "./logger/logger";
 
 app.whenReady().then(() => {
@@ -20,18 +28,41 @@ app.whenReady().then(() => {
   /**
    * Render a main launcher window
    */
-  logger.info("Initializing the main window");
-  const mainLauncherWindow = new MainLauncherWindow({
+  logger.info("Initializing windows");
+
+  /**
+   * Load the main window
+   * and resolve url (or file)
+   */
+  let mainWindow: BrowserWindow = initBrowserWindow("main", {
     webPreferences: {
-      preload: path.resolve(app.getAppPath(), "dist", "preload.js"),
+      preload: getAppPreload(),
     },
   });
+  mainWindow.loadURL(getRenderAssetURL("index.html"));
 
-  if (isDevelopment()) {
-    mainLauncherWindow.browserWindow.loadURL("http://localhost:1234");
-  } else {
-    mainLauncherWindow.browserWindow.loadFile(
-      path.resolve(app.getAppPath(), "dist", "render", "index.html")
-    );
-  }
+  /**
+   * Load development toolkit
+   */
+
+  let devWindow: BrowserWindow = initBrowserWindow("dev", {
+    title: "Kratos Dev",
+    webPreferences: {
+      preload: getAppPreload(),
+    },
+  });
+  devWindow.webContents.openDevTools({
+    mode: "right",
+  });
+  devWindow.loadURL(getRenderAssetURL("dev.html"));
+  devWindow.hide();
+  devWindow.on("close", (e) => {
+    e.preventDefault();
+
+    devWindow.hide();
+  });
+
+  // Load an IPC main register
+  logger.info("Initializing ipc");
+  loadIpcListener(getBrowserWindowManager());
 });

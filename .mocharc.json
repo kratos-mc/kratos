@@ -1,0 +1,4 @@
+{
+  "require": ["@swc-node/register"],
+  "color": true
+}
