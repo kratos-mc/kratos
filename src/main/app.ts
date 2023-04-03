@@ -1,5 +1,10 @@
 import { BrowserWindowManager, WindowId } from "./window";
-import { app, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
+import {
+  app,
+  BrowserWindow,
+  BrowserWindowConstructorOptions,
+  Menu,
+} from "electron";
 import { workspace } from "kratos-core";
 import path from "path";
 

@@ -3,11 +3,13 @@ import { Menu } from "electron/main";
 import * as path from "path";
 import {
   getAppPreload,
+  getBrowserWindowManager,
   getLauncherWorkspace,
   getRenderAssetURL,
   initBrowserWindow,
   isDevelopment,
 } from "./app";
+import { loadIpcListener } from "./ipc";
 import { logger } from "./logger/logger";
 
 app.whenReady().then(() => {
@@ -54,4 +56,7 @@ app.whenReady().then(() => {
   });
   devWindow.loadURL(getRenderAssetURL("dev.html"));
   devWindow.hide();
+
+  // Load an IPC main register
+  loadIpcListener(getBrowserWindowManager());
 });
