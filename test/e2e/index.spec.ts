@@ -1,5 +1,7 @@
+import { existsSync } from "fs-extra";
 import { _electron as electron } from "playwright";
 import { test, expect } from "@playwright/test";
+import { getLauncherWorkspace } from "../../src/main/app";
 
 test("should not throw any exception when launching", async () => {
   // Launch Electron app.
@@ -11,7 +13,8 @@ test("should not throw any exception when launching", async () => {
     // the result of the require('electron') in the main app script.
     return app.getAppPath();
   });
-  console.log(`appPath: ` + appPath);
+
+  expect(existsSync(appPath)).toBeTruthy;
 
   // Get the first window that the app opens, wait if necessary.
   const window = await electronApp.firstWindow();

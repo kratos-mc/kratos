@@ -3221,10 +3221,10 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-kratos-core@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-0.2.0.tgz#aca8e424df0cfc4439799480f5d76f33088fb1bf"
-  integrity sha512-veitPtJQjNJVqCpdxU1rL9P//aJ2kBWoQsRFO6T6oyftF1r2P0VmJrKEqzjf84WrhIh7p+60YyAVPRabd6cTQg==
+kratos-core@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.0.1.tgz#da225cb2febfe3d4440a0542f38c4a8a2ec9d7ca"
+  integrity sha512-FxViieJqyYMbjpSu5tmZDyh0WoCtDcodNgPgjHGXeuuUUExNM5a52CIPNNt2b9BEQWeg/q52fnDu70XzhV/Uvg==
   dependencies:
     fs-extra "^11.1.1"
     node-fetch "2.6.9"

@@ -6,13 +6,16 @@ import {
   getBrowserWindowManager,
   getLauncherWorkspace,
   getRenderAssetURL,
+  getVersionManager,
   initBrowserWindow,
   isDevelopment,
+  loadGameManifest,
 } from "./app";
 import { loadIpcListener } from "./ipc";
 import { logger } from "./logger/logger";
+import { getProfileManager, loadLatestProfile } from "./profile";
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   /**
    * Preload the application
    */
@@ -50,16 +53,34 @@ app.whenReady().then(() => {
     mode: "right",
   });
   devWindow.loadURL(getRenderAssetURL("dev.html"));
-  devWindow.hide();
+  devWindow.setPosition(0, 0);
+  process.env.NODE_ENV === "development" ? devWindow.show() : devWindow.hide();
   devWindow.on("close", (e) => {
     e.preventDefault();
 
     devWindow.hide();
   });
 
+  // Load game manifest
+  await loadGameManifest();
+
+  logger.info(
+    `Latest minecraft version is ${getVersionManager()
+      .getLatestReleasePackageInfo()
+      .getId()}`
+  );
+
+  // Load profile manager if has no profile founded
+  if (getProfileManager().getAllProfiles().length === 0) {
+    const profile = loadLatestProfile(getVersionManager());
+    logger.info(
+      `No profile was found, create a initial profile with name 'Latest' (uid: ${profile.id})`
+    );
+  }
+
   // Load an IPC main register
   logger.info("Initializing ipc");
-  loadIpcListener(getBrowserWindowManager());
+  loadIpcListener(getBrowserWindowManager(), getVersionManager());
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -79,12 +100,16 @@ function loadMainBrowser() {
 }
 
 /**
- * Forcibly destroy all electron app before quit the application
+ * handle before quit
  */
 app.on("before-quit", () => {
+  // Forcibly destroy all electron app before quit the application
   for (let window of getBrowserWindowManager().getAllWindows()) {
     window.destroy();
   }
+
+  // Store all profile
+  getProfileManager().storeProfile();
 });
 
 /**
