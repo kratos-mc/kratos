@@ -35,20 +35,26 @@ describe("[unit] profile#getProfileManager", () => {
   });
 });
 
-describe("[unit] profile#ProfileManager", () => {
-  describe("Version Manager is undefined", () => {
-    it(`should throw an error`, () => {
-      expect(() => {
-        new ProfileManager(undefined as any);
-      }).to.throws(/Version Manager is not provided or undefined/);
-    });
+describe("[unit] profile#getLauncherProfilePath", () => {
+  it(`should resolve correspond path`, () => {
+    expect(getLauncherProfilePath()).to.not.be.undefined;
   });
+});
+
+describe("[unit] profile#ProfileManager", () => {
+  // describe("Version Manager is undefined", () => {
+  //   it(`should throw an error`, () => {
+  //     expect(() => {
+  //       new ProfileManager();
+  //     }).to.throws(/Version Manager is not provided or undefined/);
+  //   });
+  // });
 
   describe("with version manager", () => {
     let pm: ProfileManager;
     before(async () => {
       await loadGameManifest();
-      pm = new ProfileManager(getVersionManager());
+      pm = new ProfileManager();
     });
 
     afterEach(async () => {
@@ -71,7 +77,7 @@ describe("[unit] profile#ProfileManager", () => {
     });
 
     it(`should store the profile as a JSON`, () => {
-      const latestId = pm.createProfile(
+      const profile = pm.createProfile(
         "Latest",
         getVersionManager().getLatestReleasePackageInfo().getId()
       );
@@ -85,7 +91,7 @@ describe("[unit] profile#ProfileManager", () => {
 
       const firstProfile: Profile = arr[0] as Profile;
       expect(firstProfile).to.have.keys(["id", "name", "versionId"]);
-      expect(firstProfile.id).to.eq(latestId);
+      expect(firstProfile.id).to.eq(profile.id);
     });
   });
 });

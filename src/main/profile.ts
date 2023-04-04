@@ -20,15 +20,8 @@ export function getLauncherProfilePath() {
 
 export class ProfileManager {
   private profileList: Profile[];
-  private readonly versionManager: version.VersionManager;
 
-  constructor(versionManager: version.VersionManager) {
-    if (versionManager === undefined) {
-      throw new Error(`Version Manager is not provided or undefined`);
-    }
-
-    this.versionManager = versionManager;
-
+  constructor() {
     if (!existsSync(getLauncherProfilePath())) {
       logger.warn("Launcher profile not found");
       this.profileList = [];
@@ -96,7 +89,7 @@ export function getProfileManager() {
   }
 
   if (globalProfileManager === undefined) {
-    globalProfileManager = new ProfileManager(getVersionManager());
+    globalProfileManager = new ProfileManager();
   }
 
   return globalProfileManager;
