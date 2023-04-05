@@ -4,10 +4,12 @@ import { workspace, version } from "kratos-core";
 import path from "path";
 import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
+import { DownloadPool } from "./downloadPool";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
 let globalVersionManager: version.VersionManager;
+let globalDownloadPool: DownloadPool;
 
 export function isDevelopment() {
   return process.env.NODE_ENV === "development";
@@ -116,3 +118,12 @@ export function getVersionManager() {
 
   return globalVersionManager;
 }
+
+export function getDownloadPool() {
+  if (globalDownloadPool === undefined) {
+    globalDownloadPool = new DownloadPool();
+  }
+
+  return globalDownloadPool;
+}
+

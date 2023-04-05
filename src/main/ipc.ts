@@ -1,9 +1,10 @@
 import { version } from "kratos-core";
 import { ipcMain } from "electron/main";
 import { BrowserWindowManager } from "./window";
-import { getProfileManager } from "./profile";
+import { Profile, getProfileManager } from "./profile";
 import { getVersionManager } from "./app";
 import { logger } from "./logger/logger";
+import { launchProfile } from "./launch";
 
 function handleWindowListener(browserManager) {
   /**
@@ -97,6 +98,20 @@ function handleProfileListener() {
 
     logger.info(`Deleting a profile (id: ${profileId})`);
     getProfileManager().deleteProfile(profileId);
+  });
+
+  ipcMain.on("profile:launch-profile", async (_event, profileId: string) => {
+    if (profileId === undefined) {
+      throw new Error(`profileId cannot be undefined`);
+    }
+
+    // Check if the profile is exists or not
+    if (!getProfileManager().hasProfile(profileId)) {
+      throw new Error(`Profile not found (id: ${profileId})`);
+    }
+
+    // Trying to launch profile
+    await launchProfile(getProfileManager().getProfile(profileId));
   });
 }
 

@@ -19,4 +19,6 @@ contextBridge.exposeInMainWorld("profiles", {
     ipcRenderer.invoke(`profile:create-profile`, name, version),
   deleteProfile: (profileId: string) =>
     ipcRenderer.send("profile:delete-profile", profileId),
+  launchProfile: (profileId: string) =>
+    ipcRenderer.send("profile:launch-profile", profileId),
 });

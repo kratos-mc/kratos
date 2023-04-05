@@ -56,7 +56,7 @@
     "@supercharge/promise-pool": "^2.4.0",
     "electron-log": "^4.4.8",
     "fs-extra": "^11.1.1",
-    "kratos-core": "^1.1.0"
+    "kratos-core": "^1.1.1"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.1.0",
