@@ -16,8 +16,9 @@
     "dev": "cross-env NODE_ENV=development concurrently -k -c \"auto\" \"npm:dev-*\"",
     "test-e2e": "cross-env NODE_ENV=production npm run build && playwright test test/e2e",
     "make": "rimraf ./out && electron-forge make",
-    "test-unit": "nyc electron-mocha ./test/unit/**/*.spec.ts",
-    "test": "concurrently -c \"auto\" \"npm:test-*\""
+    "test-unit": "electron-mocha ./test/unit/**/*.spec.ts",
+    "test": "concurrently -c \"auto\" \"npm:test-*\"",
+    "coverage": "nyc npm run test-unit"
   },
   "targets": {
     "main": false,
