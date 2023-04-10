@@ -57,6 +57,10 @@ export default function DevKitProfile() {
     setProfiles([...profiles, callbackProfile]);
   };
 
+  const handleLaunchProfile = (profileId) => {
+    window.profiles.launchProfile(profileId);
+  };
+
   return (
     <div>
       <h1>Profile</h1>
@@ -123,6 +127,13 @@ export default function DevKitProfile() {
                       }}
                     >
                       Delete
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleLaunchProfile(profile.id);
+                      }}
+                    >
+                      Launch
                     </button>
                   </div>
                 </li>
