@@ -4,10 +4,12 @@ import { workspace, version } from "kratos-core";
 import path from "path";
 import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
+import { kratosRuntime } from "kratos-runtime-resolver";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
 let globalVersionManager: version.VersionManager;
+let globalRuntimeWorkspace: kratosRuntime.RuntimeWorkspace;
 
 export function isDevelopment() {
   return process.env.NODE_ENV === "development";
@@ -115,4 +117,14 @@ export function getVersionManager() {
   }
 
   return globalVersionManager;
+}
+
+export function getRuntimeWorkspace() {
+  if (!globalRuntimeWorkspace) {
+    globalRuntimeWorkspace = new kratosRuntime.RuntimeWorkspace(
+      getLauncherWorkspace().getDirectory().toString()
+    );
+  }
+
+  return globalRuntimeWorkspace;
 }

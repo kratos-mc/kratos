@@ -20,3 +20,12 @@ contextBridge.exposeInMainWorld("profiles", {
   deleteProfile: (profileId: string) =>
     ipcRenderer.send("profile:delete-profile", profileId),
 });
+
+contextBridge.exposeInMainWorld("runtime", {
+  hasRuntime: (major: number): Promise<boolean> =>
+    ipcRenderer.invoke("runtime:has-runtime", major),
+  downloadRuntime: (major: number) =>
+    ipcRenderer.send("runtime:download", major),
+  getRuntime: (major: number) =>
+    ipcRenderer.invoke("runtime:get-runtime", major),
+});
