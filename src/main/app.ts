@@ -5,10 +5,12 @@ import path from "path";
 import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
 import { kratosRuntime } from "kratos-runtime-resolver";
+import { DownloadPool } from "./downloadPool";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
 let globalVersionManager: version.VersionManager;
+let globalDownloadPool: DownloadPool;
 let globalRuntimeWorkspace: kratosRuntime.RuntimeWorkspace;
 
 export function isDevelopment() {
@@ -117,6 +119,14 @@ export function getVersionManager() {
   }
 
   return globalVersionManager;
+}
+
+export function getDownloadPool() {
+  if (globalDownloadPool === undefined) {
+    globalDownloadPool = new DownloadPool();
+  }
+
+  return globalDownloadPool;
 }
 
 export function getRuntimeWorkspace() {

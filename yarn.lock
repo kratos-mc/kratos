@@ -1264,6 +1264,11 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
 
+"@supercharge/promise-pool@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@supercharge/promise-pool/-/promise-pool-2.4.0.tgz#6050eea8c2d7f92ddd4ddc582ee328b15c034ad3"
+  integrity sha512-O9CMipBlq5OObdt1uKJGIzm9cdjpPWfj+a+Zw9EgWKxaMNHKC7EU7X9taj3H0EGQNLOSq2jAcOa3EzxlfHsD6w==
+
 "@swc-node/core@^1.10.1":
   version "1.10.1"
   resolved "https://registry.yarnpkg.com/@swc-node/core/-/core-1.10.1.tgz#fa1c5730353217936903b78086786b1285f3a167"
@@ -3610,10 +3615,10 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-kratos-core@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.0.1.tgz#da225cb2febfe3d4440a0542f38c4a8a2ec9d7ca"
-  integrity sha512-FxViieJqyYMbjpSu5tmZDyh0WoCtDcodNgPgjHGXeuuUUExNM5a52CIPNNt2b9BEQWeg/q52fnDu70XzhV/Uvg==
+kratos-core@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.1.tgz#6433b5a930cdd24510ccf430366ed5304e50c4f9"
+  integrity sha512-H7CgDvWLmSEyvklNvWVhSBqbEwjstuB8ImXkYcVu6fvsJc9E6txEV4q5FNFrihUcX7ilwT/DDi4CORYSh6Yz+Q==
   dependencies:
     fs-extra "^11.1.1"
     node-fetch "2.6.9"
