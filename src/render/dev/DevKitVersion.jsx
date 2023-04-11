@@ -9,6 +9,7 @@ export default function DevKitVersion() {
 
   return (
     <div>
+      <h1>Version</h1>
       <button onClick={handleOnClick}>Show versions</button>
     </div>
   );

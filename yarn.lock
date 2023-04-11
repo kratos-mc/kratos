@@ -1537,6 +1537,11 @@ acorn@^8.5.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.2.tgz#1b2f25db02af965399b9776b0c2c391276d37c4a"
   integrity sha512-xjIYgE8HBrkpd/sJqOGNspf8uHG+NOHGOw6a/Urj8taM2EXfdNAH2oFcPeIFfsv3+kz/mJrS5VuMqbNLjCa2vw==
 
+adm-zip@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/adm-zip/-/adm-zip-0.5.10.tgz#4a51d5ab544b1f5ce51e1b9043139b639afff45b"
+  integrity sha512-x0HvcHqVJNTPk/Bw8JbLWlWoo6Wwnsug0fnYYro1HBrjxZ3G7/AZk7Ahv8JwDe1uIcz8eBqvu86FuF1POiG7vQ==
+
 agent-base@6, agent-base@^6.0.2:
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-6.0.2.tgz#49fff58577cfee3f37176feab4c22e00f86d7f77"
@@ -2370,6 +2375,11 @@ dom-serializer@^1.0.1:
     domhandler "^4.2.0"
     entities "^2.0.0"
 
+dom-walk@^0.1.0:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/dom-walk/-/dom-walk-0.1.2.tgz#0c548bef048f4d1f2a97249002236060daa3fd84"
+  integrity sha512-6QvTW9mrGeIegrFXdtQi9pk7O/nSK6lSdXW2eqUspN5LWD7UTji2Fqw5V2YLjBpHEoU9Xl/eUWNpDeZvoyOv2w==
+
 domelementtype@^2.0.1, domelementtype@^2.2.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/domelementtype/-/domelementtype-2.3.0.tgz#5c45e8e869952626331d7aab326d01daf65d589d"
@@ -3096,6 +3106,14 @@ global-prefix@^1.0.1:
     is-windows "^1.0.1"
     which "^1.2.14"
 
+global@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/global/-/global-4.4.0.tgz#3e7b105179006a323ed71aafca3e9c57a5cc6406"
+  integrity sha512-wv/LAoHdRE3BeTGz53FAamhGlPLhlssK45usmGFThIi4XqnBmjKQ16u+RNbP7WvigRZDxUsM0J3gcQ5yicaL0w==
+  dependencies:
+    min-document "^2.19.0"
+    process "^0.11.10"
+
 globals@^11.1.0:
   version "11.12.0"
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
@@ -3597,14 +3615,36 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-kratos-core@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.1.tgz#6433b5a930cdd24510ccf430366ed5304e50c4f9"
-  integrity sha512-H7CgDvWLmSEyvklNvWVhSBqbEwjstuB8ImXkYcVu6fvsJc9E6txEV4q5FNFrihUcX7ilwT/DDi4CORYSh6Yz+Q==
+kratos-core@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.2.tgz#5b9e56b08f6712766b8f34065187492495f7e91e"
+  integrity sha512-s2OThF9mHxVEjz6Zo4DovC1pEwZtwDYUBcFvo0zgqyi8lOqMTxiRGy1JU9lE5M8mPP+GcjdC+Mh+pRQUYOwmsQ==
   dependencies:
     fs-extra "^11.1.1"
     node-fetch "2.6.9"
     typed-emitter "^2.1.0"
+
+kratos-core@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.2.0.tgz#6f16577b27832f29b01833bda4914a5d54c84408"
+  integrity sha512-ynEOI01HSsgoK/xHv15/t7ZyXsuLJ0tBO4YMIFosio1cCJz4YHP2mwfyPTQj79ym9lqlXEItXZlcBLZTTAFdxw==
+  dependencies:
+    fs-extra "^11.1.1"
+    node-fetch "2.6.9"
+    typed-emitter "^2.1.0"
+
+kratos-runtime-resolver@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/kratos-runtime-resolver/-/kratos-runtime-resolver-1.0.0.tgz#5e09c58ffead8b48aa4597c807ec37ec695470cc"
+  integrity sha512-Tp1CnhbM7HyQZ1NNYFrNNxYBHB4121uxJqGIPUdd6oTfHt4H+RbCBzRI6JDe81NIyMYLAggnXnp7KZjntt6P4g==
+  dependencies:
+    adm-zip "^0.5.10"
+    cross-env "^7.0.3"
+    fs-extra "^11.1.1"
+    global "^4.4.0"
+    kratos-core "^1.1.2"
+    node-fetch "2.6.9"
+    tar "^6.1.13"
 
 lightningcss-darwin-arm64@1.19.0:
   version "1.19.0"
@@ -3945,6 +3985,13 @@ mimic-response@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/mimic-response/-/mimic-response-3.1.0.tgz#2d1d59af9c1b129815accc2c46a022a5ce1fa3c9"
   integrity sha512-z0yWI+4FDrrweS8Zmt4Ej5HdJmky15+L2e6Wgn3+iK5fWzb6T3fhNFq2+MeTRb064c6Wr4N/wv0DzQTjNzHNGQ==
+
+min-document@^2.19.0:
+  version "2.19.0"
+  resolved "https://registry.yarnpkg.com/min-document/-/min-document-2.19.0.tgz#7bd282e3f5842ed295bb748cdd9f1ffa2c824685"
+  integrity sha512-9Wy1B3m3f66bPPmU5hdA4DR4PB2OfDU/+GS3yAB7IQozE3tqXaVv2zOjgla7MEGSRv95+ILmOuvhLkOK6wJtCQ==
+  dependencies:
+    dom-walk "^0.1.0"
 
 minimatch@4.2.1:
   version "4.2.1"
@@ -5378,7 +5425,7 @@ swc-node@^1.0.0:
   dependencies:
     "@swc-node/register" "^1.4.0"
 
-tar@^6.0.5, tar@^6.1.11, tar@^6.1.2:
+tar@^6.0.5, tar@^6.1.11, tar@^6.1.13, tar@^6.1.2:
   version "6.1.13"
   resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.13.tgz#46e22529000f612180601a6fe0680e7da508847b"
   integrity sha512-jdIBIN6LTIe2jqzay/2vtYLlBHa3JF42ot3h1dW8Q0PaAG4v8rm0cvpVePtau5C6OKXGGcgO9q2AMNSWxiLqKw==

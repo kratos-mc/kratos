@@ -1,8 +1,9 @@
+import { kratosRuntime } from "kratos-runtime-resolver";
 import { version } from "kratos-core";
 import { ipcMain } from "electron/main";
 import { BrowserWindowManager } from "./window";
 import { Profile, getProfileManager } from "./profile";
-import { getVersionManager } from "./app";
+import { getRuntimeWorkspace, getVersionManager } from "./app";
 import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
 
@@ -115,6 +116,53 @@ function handleProfileListener() {
   });
 }
 
+function handleRuntimeListener() {
+  ipcMain.handle("runtime:has-runtime", (_event, runtimeMajor) => {
+    if (runtimeMajor === undefined) {
+      throw new Error(`Undefined parameter`);
+    }
+
+    return getRuntimeWorkspace().getRuntimeMap().hasRuntime(runtimeMajor);
+  });
+
+  ipcMain.on("runtime:download", async (_event, major) => {
+    if (major === undefined) {
+      throw new Error(`Undefined parameter`);
+    }
+
+    // Check if the major is not a number
+    if (!Number.isInteger(major)) {
+      throw new Error(`Major must be a number`);
+    }
+
+    const platform: kratosRuntime.RuntimeBuildOs =
+      process.platform === "linux"
+        ? "linux"
+        : process.platform === "darwin"
+        ? "mac"
+        : "windows";
+    // TODO: show unsupported with x86
+    logger.info(
+      `Resolving and downloading the runtime for JDK (major version: ${major})`
+    );
+
+    let path = await getRuntimeWorkspace().downloadRuntime(
+      major,
+      platform,
+      "x64"
+    );
+    logger.info(`Successfully resolved a JDK major at ${path}`);
+  });
+
+  ipcMain.handle("runtime:get-runtime", (_event, major: number) => {
+    if (major === undefined) {
+      throw new Error(`Unable to get a major (undefined major parameter)`);
+    }
+
+    return getRuntimeWorkspace().getRuntimeMap().getRuntime(major);
+  });
+}
+
 export function loadIpcListener(
   browserManager: BrowserWindowManager,
   versionManager: version.VersionManager
@@ -124,4 +172,6 @@ export function loadIpcListener(
   handleVersionListener(versionManager);
 
   handleProfileListener();
+
+  handleRuntimeListener();
 }

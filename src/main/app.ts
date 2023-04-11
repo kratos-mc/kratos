@@ -4,12 +4,14 @@ import { workspace, version } from "kratos-core";
 import path from "path";
 import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
+import { kratosRuntime } from "kratos-runtime-resolver";
 import { DownloadPool } from "./downloadPool";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
 let globalVersionManager: version.VersionManager;
 let globalDownloadPool: DownloadPool;
+let globalRuntimeWorkspace: kratosRuntime.RuntimeWorkspace;
 
 export function isDevelopment() {
   return process.env.NODE_ENV === "development";
@@ -127,3 +129,38 @@ export function getDownloadPool() {
   return globalDownloadPool;
 }
 
+export function getRuntimeWorkspace() {
+  if (!globalRuntimeWorkspace) {
+    globalRuntimeWorkspace = new kratosRuntime.RuntimeWorkspace(
+      getLauncherWorkspace().getDirectory().toString()
+    );
+  }
+
+  return globalRuntimeWorkspace;
+}
+
+/**
+ * Represents an abbreviation function for check whether or not the system platform is windows.
+ * 
+ * @returns true if the current running platform is windows, false otherwise
+ */
+export function isWindows() {
+  return process.platform === 'win32';
+}
+/**
+ * Represents an abbreviation function for check whether or not the system platform is macos.
+ * 
+ * @returns true if the current running platform is macos, false otherwise
+ */
+export function isOsx() {
+  return process.platform === 'darwin'
+}
+
+/**
+ * Represents an abbreviation function for check whether or not the system platform is linux.
+ * 
+ * @returns true if the current running platform is linux, false otherwise
+ */
+export function isLinux() {
+  return process.platform === 'linux'
+}
