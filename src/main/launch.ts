@@ -15,6 +15,7 @@ import { hasAsset } from "./asset";
 import { createAttemptDownload } from "kratos-core/out/download";
 import { existsSync } from "original-fs";
 import { spawnJavaProcess } from "./runtime";
+import { app } from "electron";
 
 export async function launchProfile(profile: Profile) {
   // if the profile was not found
@@ -28,16 +29,43 @@ export async function launchProfile(profile: Profile) {
 
   const pkgManager = await getCachedVersionPackageManager(profile.versionId);
   await resolveProfileAsset(pkgManager, profile);
-  await resolveLibrary(profile);
+  const libraries = await resolveLibrary(profile);
+  const mainClientJar = await resolveMainClass(profile);
   await resolveRuntime(pkgManager.getVersionPackage().javaVersion.majorVersion);
+
+  const classPathString = `${[
+    ...libraries.map((l) =>
+      path.resolve(
+        getLauncherWorkspace().getLibraryWorkspace().getDirectory().toString(),
+        path.dirname(l.downloads.artifact?.path as string),
+        path.basename(l.downloads.artifact?.path as string)
+      )
+    ),
+
+    mainClientJar,
+  ].join(path.delimiter)}`;
+
+  // console.log(classPathString);
+
+  const args = [
+    `-XstartOnFirstThread`,
+    // `-Dlog4j.configurationFile=${path.join(
+    //   getAssetLogConfigsDirectoryPath(),
+    //   path.basename(metadata.logging.client.file.url.toString())
+    // )}`,
+    "-Dorg.lwjgl.util.Debug=true",
+    // `-Djava.library.path="${_natives}"`,
+    `-Dminecraft.launcher.brand=${app.getName()}`,
+    `-Dminecraft.launcher.version=${app.getVersion()}`,
+    "-cp",
+    classPathString,
+    pkgManager.getVersionPackage().mainClass,
+    ...(await buildGameArguments(profile, "PlayerNguyen")),
+  ];
+  // logger.info(args);
   spawnJavaProcess(
     pkgManager.getVersionPackage().javaVersion.majorVersion,
-    [
-      "cp",
-      pkgManager.getVersionPackage().mainClass,
-      ...(await buildGameArguments(profile, "Notch")),
-    ],
-    { cwd: getLauncherWorkspace().getDirectory().toString() }
+    args
   );
 }
 /**
@@ -218,6 +246,8 @@ export async function resolveLibrary(profile: Profile) {
   } else {
     logger.info(`Successfully built libraries without any downloading`);
   }
+
+  return libraries;
 }
 
 async function buildArgumentsReplacer(
@@ -268,7 +298,6 @@ export async function buildGameArguments(profile: Profile, username: string) {
   }
 
   const _args: string[] = [];
-
   // jvm configs
   if (isOsx()) {
     _args.push("-XstartOnFirstThread");
@@ -288,7 +317,7 @@ export async function buildGameArguments(profile: Profile, username: string) {
     "null",
     "null",
     "null",
-    "default"
+    "mojang"
   );
 
   for (const gameArgumentIndex of gameArguments.game) {
@@ -302,4 +331,38 @@ export async function buildGameArguments(profile: Profile, username: string) {
     }
   }
   return _args;
+}
+
+export async function resolveMainClass(profile: Profile) {
+  const packageManager = getCachedVersionPackageManager(profile.versionId);
+  const versionPackage = (await packageManager).getVersionPackage();
+  // Download the main client jar file
+  if (versionPackage.downloads && versionPackage.downloads.client) {
+    const { sha1, url } = versionPackage.downloads.client;
+    const fileName = profile.versionId + ".jar";
+
+    const destination = path.join(
+      getLauncherWorkspace().getVersionWorkspace().getDirectory().toString(),
+      profile.versionId,
+      fileName
+    );
+
+    if (!existsSync(destination)) {
+      getDownloadPool().push(
+        createAttemptDownload(
+          {
+            destination,
+            url: url as URL,
+          },
+          sha1,
+          { algorithm: "sha1" }
+        )
+      );
+    }
+
+    await getDownloadPool().downloadAll();
+    logger.info(`Successfully downloaded main client jar file.`);
+    return destination;
+  }
+  throw new Error(`Invalid package information (missing client file name)`);
 }
