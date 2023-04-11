@@ -3615,19 +3615,19 @@ keyv@^4.0.0:
   dependencies:
     json-buffer "3.0.1"
 
-kratos-core@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.1.tgz#6433b5a930cdd24510ccf430366ed5304e50c4f9"
-  integrity sha512-H7CgDvWLmSEyvklNvWVhSBqbEwjstuB8ImXkYcVu6fvsJc9E6txEV4q5FNFrihUcX7ilwT/DDi4CORYSh6Yz+Q==
+kratos-core@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.2.tgz#5b9e56b08f6712766b8f34065187492495f7e91e"
+  integrity sha512-s2OThF9mHxVEjz6Zo4DovC1pEwZtwDYUBcFvo0zgqyi8lOqMTxiRGy1JU9lE5M8mPP+GcjdC+Mh+pRQUYOwmsQ==
   dependencies:
     fs-extra "^11.1.1"
     node-fetch "2.6.9"
     typed-emitter "^2.1.0"
 
-kratos-core@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.1.2.tgz#5b9e56b08f6712766b8f34065187492495f7e91e"
-  integrity sha512-s2OThF9mHxVEjz6Zo4DovC1pEwZtwDYUBcFvo0zgqyi8lOqMTxiRGy1JU9lE5M8mPP+GcjdC+Mh+pRQUYOwmsQ==
+kratos-core@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/kratos-core/-/kratos-core-1.2.0.tgz#6f16577b27832f29b01833bda4914a5d54c84408"
+  integrity sha512-ynEOI01HSsgoK/xHv15/t7ZyXsuLJ0tBO4YMIFosio1cCJz4YHP2mwfyPTQj79ym9lqlXEItXZlcBLZTTAFdxw==
   dependencies:
     fs-extra "^11.1.1"
     node-fetch "2.6.9"
