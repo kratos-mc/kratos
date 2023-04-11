@@ -14,6 +14,7 @@ import * as path from "path";
 import { hasAsset } from "./asset";
 import { createAttemptDownload } from "kratos-core/out/download";
 import { existsSync } from "original-fs";
+import { spawnJavaProcess } from "./runtime";
 
 export async function launchProfile(profile: Profile) {
   // if the profile was not found
@@ -29,6 +30,15 @@ export async function launchProfile(profile: Profile) {
   await resolveProfileAsset(pkgManager, profile);
   await resolveLibrary(profile);
   await resolveRuntime(pkgManager.getVersionPackage().javaVersion.majorVersion);
+  spawnJavaProcess(
+    pkgManager.getVersionPackage().javaVersion.majorVersion,
+    [
+      "cp",
+      pkgManager.getVersionPackage().mainClass,
+      ...(await buildGameArguments(profile, "Notch")),
+    ],
+    { cwd: getLauncherWorkspace().getDirectory().toString() }
+  );
 }
 /**
  * Gets the cached version package from local workspace if available. Otherwise,
@@ -208,4 +218,88 @@ export async function resolveLibrary(profile: Profile) {
   } else {
     logger.info(`Successfully built libraries without any downloading`);
   }
+}
+
+async function buildArgumentsReplacer(
+  profile: Profile,
+  username: string,
+  uuid: string,
+  accessToken: string,
+  clientId: string,
+  xUid: string,
+  userType: string
+) {
+  const packageManager = getCachedVersionPackageManager(profile.versionId);
+  const replacer: Map<string, string> = new Map();
+  replacer.set("${auth_player_name}", username);
+  replacer.set("${version_name}", profile.versionId);
+  replacer.set(
+    "${game_directory}",
+    getLauncherWorkspace().getDirectory().toString()
+  );
+  replacer.set(
+    "${assets_root}",
+    getLauncherWorkspace().getAssetWorkspace().getDirectory().toString()
+  );
+  replacer.set(
+    "${assets_index_name}",
+    (await packageManager).getVersionPackage().assetIndex.id
+  );
+
+  replacer.set("${auth_uuid}", uuid);
+  replacer.set("${auth_access_token}", accessToken);
+  replacer.set("${clientid}", clientId);
+  replacer.set("${auth_xuid}", xUid);
+  replacer.set("${user_type}", userType);
+  replacer.set(
+    "${version_type}",
+    (await packageManager).getVersionPackage().type
+  );
+
+  return replacer;
+}
+
+export async function buildGameArguments(profile: Profile, username: string) {
+  // If the arguments is undefined
+  const packageManager = getCachedVersionPackageManager(profile.versionId);
+  const gameArguments = (await packageManager).getVersionPackage().arguments;
+  if (!gameArguments) {
+    throw new Error(`Unsupported game package (missing arguments values)`);
+  }
+
+  const _args: string[] = [];
+
+  // jvm configs
+  if (isOsx()) {
+    _args.push("-XstartOnFirstThread");
+  }
+  if (isWindows()) {
+    _args.push(
+      "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump"
+    );
+  }
+
+  // game config
+
+  const replacer = await buildArgumentsReplacer(
+    profile,
+    username,
+    "null",
+    "null",
+    "null",
+    "null",
+    "default"
+  );
+
+  for (const gameArgumentIndex of gameArguments.game) {
+    if (typeof gameArgumentIndex === "string") {
+      if (replacer.has(gameArgumentIndex)) {
+        _args.push(replacer.get(gameArgumentIndex) as string);
+        continue;
+      }
+
+      _args.push(gameArgumentIndex);
+    }
+  }
+  return _args;
 }
