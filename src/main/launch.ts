@@ -10,7 +10,6 @@ import {
 } from "./app";
 import * as path from "path";
 import { hasAsset } from "./asset";
-import { spawnJavaProcess } from "./runtime";
 
 export async function launchProfile(profile: Profile) {
   // if the profile was not found
@@ -148,5 +147,5 @@ export async function resolveRuntime(major: number) {
     logger.info(`Successfully resolved a JDK major at ${path}`);
   }
   // Spawn a process to test jdk with -version parameter (java -version)
-  spawnJavaProcess(major, ["-version"]);
+  // spawnJavaProcess(major, ["-version"]);
 }
