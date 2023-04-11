@@ -53,5 +53,18 @@ export function spawnJavaProcess(
 
   const process = spawn(sourceBinaryJavaPath, parameter, options);
   logger.info(`Spawning java process (major: ${major}, pid: ${process.pid})`);
+
+  process.stdout.on("data", (chunk: Buffer) => {
+    logger.info(chunk.toString());
+  });
+
+  process.stderr.on("data", (chunk: Buffer) => {
+    logger.error(chunk.toString());
+  });
+
+  process.on("exit", (code) => {
+    logger.info(`Process exit with code ${code}`);
+  });
+
   return process;
 }
