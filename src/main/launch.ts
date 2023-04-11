@@ -121,14 +121,35 @@ export async function resolveProfileAsset(
   packageManager: version.VersionPackageManager,
   profile: Profile
 ) {
-  // Resolve asset
-  const assetIndexManager = new version.AssetIndexManager(
-    await packageManager.fetchAssetIndex()
-  );
+  // Get the asset from local if possible.
+  // If the asset index is not exists, fetch it from version package
+  const assetIndexesWorkspace = getLauncherWorkspace()
+    .getAssetWorkspace()
+    .getAssetIndexesWorkspace();
+  const assetIndexId = packageManager.getVersionPackage().assetIndex.id;
+  const assetFilenameId = assetIndexId + ".json";
+  let assetIndexManager: version.AssetIndexManager;
+
+  // Fetch an asset if local assetIndex is not available
+  if (!assetIndexesWorkspace.hasIndex(assetFilenameId)) {
+    logger.info(
+      `Not found asset index: ${assetFilenameId}, downloading and saving`
+    );
+    const assetIndex = await packageManager.fetchAssetIndex();
+    // Save the file
+    assetIndexesWorkspace.writeIndex(assetFilenameId, assetIndex);
+
+    // Expose for usage
+    assetIndexManager = new version.AssetIndexManager(assetIndex);
+  } else {
+    // Use local asset index from disk
+    assetIndexManager = new version.AssetIndexManager(
+      assetIndexesWorkspace.getIndex(assetFilenameId)
+    );
+  }
 
   // Loops and checks if the asset is existed or not
   // if it is not exists, push it into download pool
-
   for (const key in assetIndexManager.getObjects()) {
     const curAssetMetadata = assetIndexManager.getObjects()[key];
     if (!(await hasAsset(curAssetMetadata))) {
