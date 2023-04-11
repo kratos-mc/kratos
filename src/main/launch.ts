@@ -1,13 +1,16 @@
+import { kratosRuntime } from "kratos-runtime-resolver";
 import { download, version } from "kratos-core";
 import { logger } from "./logger/logger";
 import { Profile } from "./profile";
 import {
   getDownloadPool,
   getLauncherWorkspace,
+  getRuntimeWorkspace,
   getVersionManager,
 } from "./app";
 import * as path from "path";
 import { hasAsset } from "./asset";
+import { spawnJavaProcess } from "./runtime";
 
 export async function launchProfile(profile: Profile) {
   // if the profile was not found
@@ -21,7 +24,8 @@ export async function launchProfile(profile: Profile) {
 
   const pkgManager = await getCachedVersionPackageManager(profile.versionId);
   await resolveProfileAsset(pkgManager, profile);
-  // TODO: resolve runtime
+
+  await resolveRuntime(pkgManager.getVersionPackage().javaVersion.majorVersion);
 }
 /**
  * Gets the cached version package from local workspace if available. Otherwise,
@@ -114,4 +118,35 @@ export async function resolveProfileAsset(
 
   // Start downloading all assets
   await getDownloadPool().downloadAll();
+}
+
+export async function resolveRuntime(major: number) {
+  const didRuntimeInstalled = getRuntimeWorkspace()
+    .getRuntimeMap()
+    .hasRuntime(major);
+  logger.info(`Check for the exists of runtime major version ${major}`);
+
+  if (!didRuntimeInstalled) {
+    logger.log(`Resolving the major runtime ${major}`);
+
+    const platform: kratosRuntime.RuntimeBuildOs =
+      process.platform === "linux"
+        ? "linux"
+        : process.platform === "darwin"
+        ? "mac"
+        : "windows";
+    // TODO: show unsupported with x86
+    logger.info(
+      `Resolving and downloading the runtime for JDK (major version: ${major})`
+    );
+
+    let path = await getRuntimeWorkspace().downloadRuntime(
+      major,
+      platform,
+      "x64"
+    );
+    logger.info(`Successfully resolved a JDK major at ${path}`);
+  }
+  // Spawn a process to test jdk with -version parameter (java -version)
+  spawnJavaProcess(major, ["-version"]);
 }
