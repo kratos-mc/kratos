@@ -23,7 +23,7 @@ export class DownloadPool {
     const stackProcess = [...this.processes];
     // stackProcess[0].startDownload();
     this.processes = [];
-    this.downloadProcessPool
+    await this.downloadProcessPool
       .for(stackProcess)
       .withConcurrency(4)
       .process(async (downloadProcess, _index, _pool) => {
