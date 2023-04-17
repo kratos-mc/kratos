@@ -7,7 +7,7 @@ import { getRuntimeWorkspace, getVersionManager } from "./app";
 import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
 
-function handleWindowListener(browserManager) {
+function handleWindowListener(browserManager: BrowserWindowManager) {
   /**
    *
    */
@@ -27,6 +27,16 @@ function handleWindowListener(browserManager) {
             false
           ));
     }
+  });
+  ipcMain.on("util:open-loading-window", (e) => {
+    const loadingWindow = browserManager.getBrowserWindow("loading");
+    if (loadingWindow === undefined) {
+      throw new Error(
+        `Unable to find a current loading window. It could be closed or destroyed`
+      );
+    }
+
+    loadingWindow.show();
   });
 }
 
