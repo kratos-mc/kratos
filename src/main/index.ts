@@ -55,7 +55,7 @@ app.whenReady().then(async () => {
   initialWindow();
 
   // After finish all of this, hide loading
-  loadingSplashScreenWindow.hide();
+  loadingSplashScreenWindow.close();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -136,12 +136,26 @@ function showLoadingSplashScreen() {
     width: 400,
     height: 200,
     frame: false,
+    resizable: false,
+    minHeight: 200,
+    maxHeight: 200,
+    minWidth: 400,
+    maxWidth: 400,
     webPreferences: {},
   });
   // Load the loading screen asset
   loadingWindow.loadURL(getRenderAssetURL(`load.html`));
   // Stick it onto the top
   loadingWindow.setAlwaysOnTop(true, "status");
+  // Set dev tool types
+  isDevelopment() && loadingWindow.webContents.openDevTools({ mode: "detach" });
+
+  loadingWindow.on("close", (e) => {
+    e.preventDefault();
+    loadingWindow.hide();
+    loadingWindow.webContents.isDevToolsOpened() &&
+      loadingWindow.webContents.closeDevTools();
+  });
 
   return loadingWindow;
 }
