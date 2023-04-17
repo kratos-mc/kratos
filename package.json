@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build-preload": "swc src/preload.ts --out-file dist/preload.js --config-file .swc/preload.swcrc.json",
-    "build-main": "swc src/main --out-dir dist --config-file .swc/main.swcrc.json",
-    "build-render": "parcel build ./src/render/*.html --no-cache --dist-dir dist/render --public-url ./",
+    "build-main": "swc src/main --out-dir dist  -s --config-file .swc/main.swcrc.json",
+    "build-render": "parcel build 'src/render/**/*.html' --no-cache --dist-dir dist/render --public-url ./",
     "build": "rimraf ./dist && npm run build-render && npm run build-preload && npm run build-main",
     "start": "electron .",
     "dev-preload": "swc src/preload.ts -w --out-file dist/preload.js --config-file .swc/preload.swcrc.json",
@@ -27,7 +27,19 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "out": "dist"
+        "out": "dist",
+        "ignore": [
+          "^/src",
+          "^/.nyc_output",
+          "^/.parcel-cache",
+          "^/.swc",
+          "^/.vscode",
+          "^/logs",
+          "^/test",
+          "^/gitignore",
+          "^/.mocharc.json",
+          "^/yarn-error.log"
+        ]
       },
       "makers": [
         {
@@ -57,8 +69,9 @@
     "@supercharge/promise-pool": "^2.4.0",
     "electron-log": "^4.4.8",
     "fs-extra": "^11.1.1",
-    "kratos-core": "^1.2.0",
-    "kratos-runtime-resolver": "^1.0.0"
+    "kratos-core": "^1.3.1",
+    "kratos-runtime-resolver": "^1.0.2",
+    "windows-release": "^5.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.1.0",

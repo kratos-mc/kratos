@@ -6,6 +6,7 @@ import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
 import { kratosRuntime } from "kratos-runtime-resolver";
 import { DownloadPool } from "./downloadPool";
+import { pathToFileURL, format } from "url";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
@@ -67,14 +68,22 @@ export function initBrowserWindow(
 }
 
 export function getRenderAssetURL(assetName: string) {
-  let baseUrl;
-  if (isDevelopment()) {
-    baseUrl = "http://localhost:1234";
-  } else {
-    baseUrl = "file://dist/render";
-  }
+  let url = format(
+    isDevelopment()
+      ? {
+          protocol: "http",
+          hostname: "localhost",
+          port: "1234",
+          pathname: assetName,
+        }
+      : {
+          protocol: "file",
+          slashes: true,
+          pathname: path.join(app.getAppPath(), "dist", "render", assetName),
+        }
+  );
 
-  return baseUrl + "/" + assetName;
+  return url.toString();
 }
 
 export async function loadGameManifest() {
@@ -141,26 +150,30 @@ export function getRuntimeWorkspace() {
 
 /**
  * Represents an abbreviation function for check whether or not the system platform is windows.
- * 
+ *
  * @returns true if the current running platform is windows, false otherwise
  */
 export function isWindows() {
-  return process.platform === 'win32';
+  return process.platform === "win32";
 }
 /**
  * Represents an abbreviation function for check whether or not the system platform is macos.
- * 
+ *
  * @returns true if the current running platform is macos, false otherwise
  */
 export function isOsx() {
-  return process.platform === 'darwin'
+  return process.platform === "darwin";
 }
 
 /**
  * Represents an abbreviation function for check whether or not the system platform is linux.
- * 
+ *
  * @returns true if the current running platform is linux, false otherwise
  */
 export function isLinux() {
-  return process.platform === 'linux'
+  return process.platform === "linux";
+}
+
+export function getNativesPath() {
+  return path.join(getLauncherWorkspace().getDirectory().toString(), "natives");
 }

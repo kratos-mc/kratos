@@ -28,39 +28,6 @@ app.whenReady().then(async () => {
     `Launcher data directory: ${getLauncherWorkspace().getDirectory()}`
   );
 
-  /**
-   * Render a main launcher window
-   */
-  logger.info("Initializing windows");
-
-  /**
-   * Load the main window
-   * and resolve url (or file)
-   */
-  let mainBrowser = loadMainBrowser();
-
-  /**
-   * Load development toolkit
-   */
-
-  let devWindow: BrowserWindow = initBrowserWindow("dev", {
-    title: "Kratos Dev",
-    webPreferences: {
-      preload: getAppPreload(),
-    },
-  });
-  devWindow.webContents.openDevTools({
-    mode: "right",
-  });
-  devWindow.loadURL(getRenderAssetURL("dev.html"));
-  devWindow.setPosition(0, 0);
-  process.env.NODE_ENV === "development" ? devWindow.show() : devWindow.hide();
-  devWindow.on("close", (e) => {
-    e.preventDefault();
-
-    devWindow.hide();
-  });
-
   // Load game manifest
   await loadGameManifest();
 
@@ -82,6 +49,8 @@ app.whenReady().then(async () => {
   logger.info("Initializing ipc");
   loadIpcListener(getBrowserWindowManager(), getVersionManager());
 
+  initialWindow();
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       loadMainBrowser();
@@ -95,7 +64,8 @@ function loadMainBrowser() {
       preload: getAppPreload(),
     },
   });
-  mainWindow.loadURL(getRenderAssetURL("index.html"));
+  mainWindow.loadURL(getRenderAssetURL("index.html").toString());
+  // mainWindow.loadFile("file://dist/render/index.html");
   return mainWindow;
 }
 
@@ -118,3 +88,38 @@ app.on("before-quit", () => {
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
+
+function initialWindow() {
+  /**
+   * Render a main launcher window
+   */
+  logger.info("Initializing windows");
+  /**
+   * Load the main window
+   * and resolve url (or file)
+   */
+  let mainBrowser = loadMainBrowser();
+
+  /**
+   * Load development toolkit
+   */
+
+  let devWindow: BrowserWindow = initBrowserWindow("dev", {
+    title: "Kratos Dev",
+    webPreferences: {
+      preload: getAppPreload(),
+    },
+  });
+  devWindow.webContents.openDevTools({
+    mode: "right",
+  });
+
+  devWindow.loadURL(getRenderAssetURL("dev.html").toString());
+  devWindow.setPosition(0, 0);
+  process.env.NODE_ENV === "development" ? devWindow.show() : devWindow.hide();
+  devWindow.on("close", (e) => {
+    e.preventDefault();
+
+    devWindow.hide();
+  });
+}
