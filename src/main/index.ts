@@ -64,7 +64,8 @@ function loadMainBrowser() {
       preload: getAppPreload(),
     },
   });
-  mainWindow.loadURL(getRenderAssetURL("index.html"));
+  mainWindow.loadURL(getRenderAssetURL("index.html").toString());
+  // mainWindow.loadFile("file://dist/render/index.html");
   return mainWindow;
 }
 
@@ -112,7 +113,8 @@ function initialWindow() {
   devWindow.webContents.openDevTools({
     mode: "right",
   });
-  devWindow.loadURL(getRenderAssetURL("dev.html"));
+
+  devWindow.loadURL(getRenderAssetURL("dev.html").toString());
   devWindow.setPosition(0, 0);
   process.env.NODE_ENV === "development" ? devWindow.show() : devWindow.hide();
   devWindow.on("close", (e) => {
