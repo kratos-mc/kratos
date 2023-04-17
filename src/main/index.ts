@@ -28,6 +28,9 @@ app.whenReady().then(async () => {
     `Launcher data directory: ${getLauncherWorkspace().getDirectory()}`
   );
 
+  // Show loading splash screen before fetch anything
+  const loadingSplashScreenWindow = showLoadingSplashScreen();
+
   // Load game manifest
   await loadGameManifest();
 
@@ -50,6 +53,9 @@ app.whenReady().then(async () => {
   loadIpcListener(getBrowserWindowManager(), getVersionManager());
 
   initialWindow();
+
+  // After finish all of this, hide loading
+  loadingSplashScreenWindow.close();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -122,4 +128,34 @@ function initialWindow() {
 
     devWindow.hide();
   });
+}
+
+function showLoadingSplashScreen() {
+  const loadingWindow = initBrowserWindow("loading", {
+    title: "Kratos Launcher - Initializing",
+    width: 400,
+    height: 200,
+    frame: false,
+    resizable: false,
+    minHeight: 200,
+    maxHeight: 200,
+    minWidth: 400,
+    maxWidth: 400,
+    webPreferences: {},
+  });
+  // Load the loading screen asset
+  loadingWindow.loadURL(getRenderAssetURL(`load.html`));
+  // Stick it onto the top
+  loadingWindow.setAlwaysOnTop(true, "status");
+  // Set dev tool types
+  isDevelopment() && loadingWindow.webContents.openDevTools({ mode: "detach" });
+
+  loadingWindow.on("close", (e) => {
+    e.preventDefault();
+    loadingWindow.hide();
+    loadingWindow.webContents.isDevToolsOpened() &&
+      loadingWindow.webContents.closeDevTools();
+  });
+
+  return loadingWindow;
 }

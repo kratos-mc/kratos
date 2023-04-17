@@ -1,0 +1,6 @@
+.loading-wrapper,
+.loading-wrapper * {
+  /* background: red; */
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
