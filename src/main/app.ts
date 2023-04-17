@@ -6,7 +6,7 @@ import { logger } from "./logger/logger";
 import { existsSync, readJson } from "fs-extra";
 import { kratosRuntime } from "kratos-runtime-resolver";
 import { DownloadPool } from "./downloadPool";
-import { format } from "url";
+import { pathToFileURL, format } from "url";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
@@ -68,20 +68,22 @@ export function initBrowserWindow(
 }
 
 export function getRenderAssetURL(assetName: string) {
-  // const url = new URL(
-  //   isDevelopment() ? `/render/${assetName}` : `/${assetName}`,
-  //   isDevelopment() ? `http://localhost:1234` : `file://${__dirname}/dist`
-  // );
-  // // console.log(path.resolve(, assetName));
+  let url = format(
+    isDevelopment()
+      ? {
+          protocol: "http",
+          hostname: "localhost",
+          port: "1234",
+          pathname: assetName,
+        }
+      : {
+          protocol: "file",
+          slashes: true,
+          pathname: path.join(app.getAppPath(), "dist", "render", assetName),
+        }
+  );
 
-  // return url;
-  return format({
-    protocol: isDevelopment() ? "http" : "file",
-    hostname: isDevelopment() ? "localhost:1234" : app.getAppPath(),
-    pathname: isDevelopment()
-      ? assetName
-      : path.join(`/dist/render/`, assetName),
-  });
+  return url.toString();
 }
 
 export async function loadGameManifest() {
