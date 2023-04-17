@@ -1,5 +1,6 @@
 {
   "name": "kratos",
+  "productName": "Kratos Launcher",
   "version": "1.0.0",
   "main": "dist/main/index.js",
   "license": "MIT",
