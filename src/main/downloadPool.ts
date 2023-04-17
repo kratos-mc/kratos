@@ -28,7 +28,15 @@ export class DownloadPool {
       .withConcurrency(4)
       .process(async (downloadProcess, _index, _pool) => {
         const info = downloadProcess.getDownloadInfo();
-        logger.info(`Downloading ${info.destination}`);
+
+        const destinationPath = info.destination;
+        const destinationPathSegment = destinationPath.split("/");
+        logger.info(
+          `Downloading ${
+            destinationPathSegment[destinationPathSegment.length - 1]
+          }`
+        );
+
         const _downloadInfo = await downloadProcess.startDownload();
         // logger.info(`Successfully downloaded ${_downloadInfo.destination}`);
         return _downloadInfo;

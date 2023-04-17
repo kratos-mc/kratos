@@ -28,3 +28,7 @@ export function hasAsset(assetMetadata: version.AssetMetadata) {
     });
   });
 }
+
+export function getNativeDirectoryPath() {
+  return path.join(getLauncherWorkspace().getDirectory().toString(), "natives");
+}

@@ -68,3 +68,41 @@ export function spawnJavaProcess(
 
   return process;
 }
+
+/**
+ * Gets the `process.platform` and returns a corresponding platform for
+ * adoptium to searching for the Java Runtime Environment.
+ *
+ * @returns the correspond Java Runtime platform from process.platform, it must be `linux`, `mac`, or `windows`.
+ */
+export async function determineRuntimePlatform() {
+  switch (process.platform) {
+    case "linux": {
+      return `linux`;
+    }
+    case "darwin": {
+      return `mac`;
+    }
+    case "win32": {
+      return `windows`;
+    }
+    default: {
+      throw new Error(
+        `Runtime is unsupported for the platform: ${process.platform}`
+      );
+    }
+  }
+}
+
+export async function installRuntime(major: number) {
+  logger.info(`Installing java runtime ${major}`);
+
+  let runtimeDestination = await getRuntimeWorkspace().downloadRuntime(
+    major,
+    await determineRuntimePlatform(),
+    "x64",
+    "jre"
+  );
+  logger.info(`Java ${major} is installed at path ${runtimeDestination}`);
+  return runtimeDestination;
+}
