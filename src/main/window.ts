@@ -1,6 +1,6 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 
-export type WindowId = "main" | "dev";
+export type WindowId = "main" | "dev" | "loading";
 
 export class BrowserWindowManager {
   private windowMap: Map<WindowId, BrowserWindow> = new Map();
