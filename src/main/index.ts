@@ -66,6 +66,10 @@ app.whenReady().then(async () => {
 
 function loadMainBrowser() {
   let mainWindow: BrowserWindow = initBrowserWindow("main", {
+    frame: false,
+    transparent: true,
+    vibrancy: "under-window",
+    visualEffectState: "active",
     webPreferences: {
       preload: getAppPreload(),
     },
