@@ -15,18 +15,19 @@ function App() {
     });
     return () => {};
   });
+
   return (
     <HashRouter>
       <div className="fixed top-0 left-0 bg-transparent w-full h-full flex flex-row">
         {/* Left aside menu */}
         <AsideMenu />
 
-        {/*   Routes switching*/}
-        <div className="w-5/6 bg-neutral-200">
+        {/* Routes switching */}
+        <AppLayout className="w-5/6">
           <Routes>
             <Route path="/" index element={<Home />} />
           </Routes>
-        </div>
+        </AppLayout>
       </div>
     </HashRouter>
   );
