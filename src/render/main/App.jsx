@@ -3,6 +3,8 @@ import "./../import-tailwind.css";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import AsideMenu from "./components/AsideMenu/AsideMenu";
 import Home from "./routes/Home/Home";
+import AppLayout from "./AppLayout";
+import "./index.css";
 
 function App() {
   useEffect(() => {
