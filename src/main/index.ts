@@ -70,6 +70,11 @@ function loadMainBrowser() {
     transparent: true,
     vibrancy: "under-window",
     visualEffectState: "active",
+    titleBarStyle: "hiddenInset",
+    trafficLightPosition: {
+      x: 12,
+      y: 10,
+    },
     webPreferences: {
       preload: getAppPreload(),
     },
