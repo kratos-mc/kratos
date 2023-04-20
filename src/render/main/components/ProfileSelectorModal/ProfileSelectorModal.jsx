@@ -6,6 +6,7 @@ import Input from "../Input/Input";
 import Selector from "../Selector/Selector";
 import { useMinecraftVersions } from "../../hooks/useMinecraftVersions";
 import { useCreateProfile } from "../../hooks/useCreateProfile";
+import classnames from "classnames";
 
 function ProfileListItem({ id, name, versionId, onSelect }) {
   const handleOnSelectProfile = (e) => {
@@ -16,7 +17,7 @@ function ProfileListItem({ id, name, versionId, onSelect }) {
 
   return (
     <button
-      className="px-4 py-2 text-left flex flex-row items-center hover:bg-neutral-300 dark:hover:bg-neutral-700"
+      className="px-4 py-1 text-left flex flex-row items-center hover:bg-neutral-300 dark:hover:bg-neutral-700"
       title={id}
       onClick={handleOnSelectProfile}
     >
@@ -33,9 +34,9 @@ function ProfileListItem({ id, name, versionId, onSelect }) {
 
 function ProfileList({ profile, onSelect }) {
   return (
-    <div className="bg-neutral-200 dark:bg-neutral-600 mt-4 rounded-md flex flex-col gap-1 max-h-[30vh] overflow-y-auto">
+    <div className="bg-neutral-200 dark:bg-neutral-600 mt-4 rounded-md flex flex-col gap-1 max-h-[20vh] overflow-y-auto">
       {profile.length === 0 ? (
-        <div>No profile</div>
+        <div className={classnames("px-2 py-3")}>No profile</div>
       ) : (
         profile.map(({ id, name, versionId }, _b) => {
           return (
@@ -53,12 +54,14 @@ function ProfileList({ profile, onSelect }) {
   );
 }
 
-function SearchProfileInput() {
+function SearchProfileInput({ onSearch, value }) {
   return (
     <Input
       type="text"
       name="search-profile"
       placeholder="Looking for profile"
+      onChange={onSearch}
+      value={value}
     />
   );
 }
@@ -90,6 +93,7 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
   const [selectedProfileItem, setSelectedProfileItem] = useState(undefined);
   const [didVisibleNewProfile, setDidVisibleNewProfile] = useState(false);
   const [profileName, setProfileName] = useState("");
+  const [searchProfile, setSearchProfile] = useState("");
 
   const createProfile = useCreateProfile();
 
@@ -112,6 +116,10 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
     return setProfileName(e.target.value);
   };
 
+  const handleSearchProfile = (e) => {
+    setSearchProfile(e.target.value);
+  };
+
   return (
     <ModalLayout setVisible={setVisible} visible={visible}>
       <div className="w-2/4 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 px-6 py-4 mx-auto mt-6 rounded-md shadow-lg flex flex-col gap-4">
@@ -128,9 +136,25 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
 
         {/* Body */}
         <div>
-          <SearchProfileInput />
+          <SearchProfileInput
+            onSearch={handleSearchProfile}
+            value={searchProfile}
+          />
           {/* List of profile */}
-          <ProfileList profile={profile} onSelect={handleChangeProfile} />
+          <ProfileList
+            profile={
+              searchProfile !== ""
+                ? profile.filter(
+                    (_p) =>
+                      _p.name
+                        .toLowerCase()
+                        .includes(searchProfile.toLowerCase()) ||
+                      _p.name.toLowerCase() === searchProfile.toLowerCase()
+                  )
+                : profile
+            }
+            onSelect={handleChangeProfile}
+          />
         </div>
 
         {/* Footer */}
