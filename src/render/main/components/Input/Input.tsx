@@ -1,9 +1,13 @@
-import React, { ReactElement } from "react";
+import React from "react";
 import classnames from "classnames";
 
-export interface InputProps {
-  props: ReactElement;
-}
+export interface InputProps
+  extends React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  > {
+    
+  }
 
 export default function Input(props: InputProps) {
   return (

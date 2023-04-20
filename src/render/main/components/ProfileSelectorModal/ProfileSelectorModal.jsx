@@ -3,6 +3,9 @@ import ModalLayout from "../Modal/ModalLayout";
 import Button from "../Button/Button";
 import { IoIosClose, IoIosArrowDropright } from "react-icons/io";
 import Input from "../Input/Input";
+import Selector from "../Selector/Selector";
+import { useMinecraftVersions } from "../../hooks/useMinecraftVersions";
+import { useCreateProfile } from "../../hooks/useCreateProfile";
 
 function ProfileListItem({ id, name, versionId, onSelect }) {
   const handleOnSelectProfile = (e) => {
@@ -60,8 +63,35 @@ function SearchProfileInput() {
   );
 }
 
+function GameVersionSelector({ selectedItem, setSelectedItem }) {
+  const { versions } = useMinecraftVersions();
+
+  // useEffect(() => {
+  //   if (versions !== undefined) {
+  //     console.log(versions[0]);
+  //     setSelectedItem(versions[0]);
+  //   }
+  // }, [versions]);
+
+  return (
+    <Selector
+      placeholder="Select Minecraft version"
+      onSelectItem={(selectedItem) => {
+        setSelectedItem(selectedItem);
+      }}
+      currentItem={selectedItem}
+      items={versions}
+    />
+  );
+}
+
 export default function ProfileSelectorModal({ visible, setVisible }) {
   const [profile, setProfile] = useState([]);
+  const [selectedProfileItem, setSelectedProfileItem] = useState(undefined);
+  const [didVisibleNewProfile, setDidVisibleNewProfile] = useState(false);
+  const [profileName, setProfileName] = useState("");
+
+  const createProfile = useCreateProfile();
 
   useEffect(() => {
     profiles.getAllProfiles().then((profile) => {
@@ -78,50 +108,101 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
     handleCloseDialog();
   };
 
+  const handleChangeProfileName = (e) => {
+    return setProfileName(e.target.value);
+  };
+
   return (
-    visible && (
-      <ModalLayout setVisible={setVisible} visible={visible}>
-        <div className="w-2/4 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 px-6 py-4 mx-auto mt-6 rounded-md shadow-lg flex flex-col gap-4">
-          {/* Header */}
-          <div className="flex flex-row items-center">
-            <div className="text-2xl flex-1">Select a profile</div>
-            <Button
-              className={`text-xl p-0 m-0 bg-transparent hover:bg-transparent`}
-              onClick={handleCloseDialog}
-            >
-              <IoIosClose />
-            </Button>
-          </div>
+    <ModalLayout setVisible={setVisible} visible={visible}>
+      <div className="w-2/4 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 px-6 py-4 mx-auto mt-6 rounded-md shadow-lg flex flex-col gap-4">
+        {/* Header */}
+        <div className="flex flex-row items-center">
+          <div className="text-2xl flex-1">Select a profile</div>
+          <Button
+            className={`text-xl p-0 m-0 bg-transparent hover:bg-transparent`}
+            onClick={handleCloseDialog}
+          >
+            <IoIosClose />
+          </Button>
+        </div>
 
-          {/* Body */}
-          <div>
-            <SearchProfileInput />
-            {/* List of profile */}
-            <ProfileList profile={profile} onSelect={handleChangeProfile} />
-          </div>
+        {/* Body */}
+        <div>
+          <SearchProfileInput />
+          {/* List of profile */}
+          <ProfileList profile={profile} onSelect={handleChangeProfile} />
+        </div>
 
-          {/* Footer */}
-          <div>
-            <div>
-              <h1>New Profile</h1>
-              <div>
-                <SearchProfileInput />
+        {/* Footer */}
+        <div className="flex flex-col gap-3">
+          {/* Create a new profile form */}
+          {didVisibleNewProfile && (
+            <div className="flex flex-col gap-2">
+              {/* NewProfile: header */}
+              <div className="flex flex-row">
+                <h1 className="flex-1">New Profile</h1>
+                <Button onClick={() => setDidVisibleNewProfile(false)}>
+                  <IoIosClose />
+                </Button>
+              </div>
 
-                <SearchProfileInput />
+              {/* NewProfile: body */}
+              <div className="flex flex-col gap-3">
+                {/* Name of the profile */}
+                <Input
+                  placeholder="Red Stone Torch..."
+                  value={profileName}
+                  onChange={handleChangeProfileName}
+                />
+
+                <GameVersionSelector
+                  selectedItem={selectedProfileItem}
+                  setSelectedItem={setSelectedProfileItem}
+                />
               </div>
             </div>
+          )}
 
-            <Button
-              level="success"
-              size="md"
-              className="text-md"
-              onClick={() => {}}
-            >
-              New profile
-            </Button>
-          </div>
+          <Button
+            level="success"
+            size="md"
+            className="text-md"
+            disabled={didVisibleNewProfile && !selectedProfileItem}
+            onClick={() => {
+              if (!didVisibleNewProfile) {
+                setDidVisibleNewProfile(true);
+              } else {
+                // handleCreateProfile
+                if (selectedProfileItem === undefined) {
+                  throw new Error(
+                    `Invalid profile item (profile item is undefined)`
+                  );
+                } else {
+                  // Check the profile name
+                  if (
+                    profileName === undefined ||
+                    selectedProfileItem === undefined
+                  ) {
+                    throw new Error(
+                      `The profile name or game version is not set`
+                    );
+                  }
+
+                  // Create a new profile and then set the value for that profile
+                  createProfile(profileName, selectedProfileItem.id).then(
+                    (response) => {
+                      // console.log(response);
+                      setProfile([...profile, response]);
+                    }
+                  );
+                }
+              }
+            }}
+          >
+            {!didVisibleNewProfile ? `New profile` : `Add profile`}
+          </Button>
         </div>
-      </ModalLayout>
-    )
+      </div>
+    </ModalLayout>
   );
 }

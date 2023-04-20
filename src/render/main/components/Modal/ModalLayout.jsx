@@ -7,8 +7,10 @@ export default function ModalLayout({ visible, setVisible, children }) {
   useOnClickOutside(ref, () => setVisible(false));
 
   return (
-    <div className="z-20 bg-black bg-opacity-20 absolute left-0 top-0 w-full h-full">
-      <div ref={ref}>{children}</div>
-    </div>
+    visible && (
+      <div className="z-20 bg-black bg-opacity-20 absolute left-0 top-0 w-full h-full rounded-t-xl">
+        <div ref={ref}>{children}</div>
+      </div>
+    )
   );
 }

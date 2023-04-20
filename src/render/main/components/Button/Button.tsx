@@ -1,7 +1,11 @@
 import React from "react";
 import classnames from "classnames";
 
-interface ButtonProps {
+interface ButtonProps
+  extends React.DetailedHTMLProps<
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
+    HTMLButtonElement
+  > {
   size: "xs" | "sm" | "md" | "xl";
   level: "primary" | "danger" | "success" | "warning";
   className: string;
