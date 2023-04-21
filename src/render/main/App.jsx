@@ -6,6 +6,17 @@ import Home from "./routes/Home/Home";
 import AppLayout from "./AppLayout";
 import "./index.css";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.min.css";
+
+const contextClass = {
+  success: "bg-blue-600",
+  error: "bg-red-600",
+  info: "bg-neutral-400",
+  warning: "bg-orange-400",
+  default: "bg-indigo-600",
+  dark: "bg-white-600 font-gray-300",
+};
 function App() {
   useEffect(() => {
     console.log({
@@ -29,6 +40,17 @@ function App() {
           </Routes>
         </AppLayout>
       </div>
+
+      <ToastContainer
+        toastClassName={({ type }) =>
+          contextClass[type || "default"] +
+          " relative flex p-1 min-h-10 rounded-md justify-between overflow-hidden cursor-pointer"
+        }
+        bodyClassName={() => "text-sm font-white font-med block p-3"}
+        transition={`slide`}
+        position="bottom-left"
+        autoClose={3000}
+      />
     </HashRouter>
   );
 }
