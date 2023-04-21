@@ -29,7 +29,12 @@ function App() {
 
   return (
     <HashRouter>
-      <div className="fixed top-0 left-0 bg-transparent w-full h-full flex flex-row">
+      <div className="draggable-area h-[36px] pl-[20vw]">
+        <span className="block pt-2 text-sm font-bold dark:text-neutral-100">
+          Kratos Launcher
+        </span>
+      </div>
+      <div className="fixed top-[36px] left-0 bg-transparent w-full h-full flex flex-row">
         {/* Left aside menu */}
         <AsideMenu />
 

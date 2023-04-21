@@ -8,13 +8,5 @@ import { Outlet } from "react-router-dom";
  *
  */
 export default function AppLayout({ className, children }) {
-  return (
-    <div className={`${className}`}>
-      <div className="draggable-area h-[32px] px-4">
-        <span className="block pt-2 text-sm font-bold">Kratos Launcher</span>
-      </div>
-
-      {children}
-    </div>
-  );
+  return <div className={`${className}`}>{children}</div>;
 }
