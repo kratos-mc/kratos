@@ -150,7 +150,7 @@ export default function ProfileSelectorModal({
 
   return (
     <ModalLayout setVisible={setVisible} visible={visible}>
-      <div className="w-2/4 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 px-6 py-4 mx-auto mt-6 rounded-md shadow-lg flex flex-col gap-4">
+      <div className="bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-200 px-6 py-4 mx-auto mt-6 rounded-md shadow-lg flex flex-col gap-4">
         {/* Header */}
         <div className="flex flex-row items-center">
           <div className="text-2xl flex-1">Select a profile</div>
