@@ -7,11 +7,7 @@ export default function ProfileSelector({ onClick }) {
   const { latestProfileId, profiles } = useSelector((state) => state.app);
 
   useEffect(() => {
-    console.log(latestProfileId);
     if (latestProfileId !== undefined && profiles.length > 0) {
-      // if (profiles.length === 0) {
-      //   throw new Error(`Not found any profile to update`);
-      // }
       setProfile(profiles.find((profile) => profile.id === latestProfileId));
     }
   }, [latestProfileId, profiles]);
