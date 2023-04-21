@@ -137,8 +137,12 @@ export default function ProfileSelectorModal({
 
         // Create a new profile and then set the value for that profile
         createProfile(profileName, selectedProfileItem.id).then((response) => {
-          // console.log(response);
           dispatch(setProfiles([...profiles, response]));
+
+          // Clean up
+          setProfileName("");
+          setSearchProfile("");
+          setDidVisibleNewProfile(false);
         });
       }
     }
