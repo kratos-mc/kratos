@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, nativeTheme } from "electron";
 import { Menu } from "electron/main";
 import * as path from "path";
 import {
@@ -9,6 +9,8 @@ import {
   getVersionManager,
   initBrowserWindow,
   isDevelopment,
+  isOsx,
+  isWindows,
   loadGameManifest,
 } from "./app";
 import { loadIpcListener } from "./ipc";
@@ -36,7 +38,7 @@ app.whenReady().then(async () => {
 
     const devInstaller = await import("electron-devtools-installer");
     const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = devInstaller;
-    await devInstaller.default([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], {});
+    await devInstaller.default([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]);
   }
   // Load game manifest
   await loadGameManifest();
@@ -75,9 +77,8 @@ function loadMainBrowser() {
   let mainWindow: BrowserWindow = initBrowserWindow("main", {
     frame: false,
     transparent: true,
-    vibrancy: "under-window",
     visualEffectState: "active",
-    titleBarStyle: "hiddenInset",
+    titleBarStyle: "hidden",
     trafficLightPosition: {
       x: 12,
       y: 10,
@@ -88,6 +89,16 @@ function loadMainBrowser() {
   });
   mainWindow.loadURL(getRenderAssetURL("index.html").toString());
   // mainWindow.loadFile("file://dist/render/index.html");
+  const themeSource = nativeTheme.themeSource;
+  if (isWindows()) {
+    mainWindow.setTitleBarOverlay({
+      color: themeSource === "light" ? "#f5f5f5" : "#525252",
+    });
+  }
+  if (isOsx()) {
+    mainWindow.setVibrancy("under-window");
+    // mainWindow.setEf
+  }
   return mainWindow;
 }
 
