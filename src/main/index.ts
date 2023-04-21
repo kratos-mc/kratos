@@ -30,7 +30,14 @@ app.whenReady().then(async () => {
 
   // Show loading splash screen before fetch anything
   const loadingSplashScreenWindow = showLoadingSplashScreen();
+  // Install the extension if using dev environment
+  if (isDevelopment()) {
+    logger.info(`Loading the development extensions`);
 
+    const devInstaller = await import("electron-devtools-installer");
+    const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = devInstaller;
+    await devInstaller.default([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS], {});
+  }
   // Load game manifest
   await loadGameManifest();
 
