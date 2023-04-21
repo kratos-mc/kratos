@@ -6,7 +6,10 @@ import Input from "../Input/Input";
 import Selector from "../Selector/Selector";
 import { useMinecraftVersions } from "../../hooks/useMinecraftVersions";
 import { useCreateProfile } from "../../hooks/useCreateProfile";
+
+import { useSelector, useDispatch } from "react-redux";
 import classnames from "classnames";
+import { setLastProfile, setProfiles } from "../../slices/AppSlice";
 
 function ProfileListItem({ id, name, versionId, onSelect }) {
   const handleOnSelectProfile = (e) => {
@@ -32,13 +35,13 @@ function ProfileListItem({ id, name, versionId, onSelect }) {
   );
 }
 
-function ProfileList({ profile, onSelect }) {
+function ProfileList({ profiles, onSelect }) {
   return (
     <div className="bg-neutral-200 dark:bg-neutral-600 mt-4 rounded-md flex flex-col gap-1 max-h-[20vh] overflow-y-auto">
-      {profile.length === 0 ? (
+      {profiles.length === 0 ? (
         <div className={classnames("px-2 py-3")}>No profile</div>
       ) : (
-        profile.map(({ id, name, versionId }, _b) => {
+        profiles.map(({ id, name, versionId }, _b) => {
           return (
             <ProfileListItem
               key={id}
@@ -88,26 +91,25 @@ function GameVersionSelector({ selectedItem, setSelectedItem }) {
   );
 }
 
-export default function ProfileSelectorModal({ visible, setVisible }) {
-  const [profile, setProfile] = useState([]);
+export default function ProfileSelectorModal({
+  visible,
+  setVisible,
+  onSelect,
+}) {
+  const { profiles } = useSelector((state) => state.app);
   const [selectedProfileItem, setSelectedProfileItem] = useState(undefined);
   const [didVisibleNewProfile, setDidVisibleNewProfile] = useState(false);
   const [profileName, setProfileName] = useState("");
   const [searchProfile, setSearchProfile] = useState("");
 
-  const createProfile = useCreateProfile();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    profiles.getAllProfiles().then((profile) => {
-      setProfile(profile);
-    });
-  }, []);
+  const createProfile = useCreateProfile();
 
   const handleCloseDialog = () => setVisible(false);
 
   const handleChangeProfile = ({ id, versionId, name }) => {
-    alert(`Change profile into ${id} - ${versionId}`);
-    // TODO: handle change the current profile
+    onSelect({ id, versionId, name });
 
     handleCloseDialog();
   };
@@ -118,6 +120,28 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
 
   const handleSearchProfile = (e) => {
     setSearchProfile(e.target.value);
+  };
+
+  const handleSubmitCreateNewProfile = () => {
+    if (!didVisibleNewProfile) {
+      setDidVisibleNewProfile(true);
+    } else {
+      // handleCreateProfile
+      if (selectedProfileItem === undefined) {
+        throw new Error(`Invalid profile item (profile item is undefined)`);
+      } else {
+        // Check the profile name
+        if (profileName === undefined || selectedProfileItem === undefined) {
+          throw new Error(`The profile name or game version is not set`);
+        }
+
+        // Create a new profile and then set the value for that profile
+        createProfile(profileName, selectedProfileItem.id).then((response) => {
+          // console.log(response);
+          dispatch(setProfiles([...profiles, response]));
+        });
+      }
+    }
   };
 
   return (
@@ -142,16 +166,16 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
           />
           {/* List of profile */}
           <ProfileList
-            profile={
+            profiles={
               searchProfile !== ""
-                ? profile.filter(
+                ? profiles.filter(
                     (_p) =>
                       _p.name
                         .toLowerCase()
                         .includes(searchProfile.toLowerCase()) ||
                       _p.name.toLowerCase() === searchProfile.toLowerCase()
                   )
-                : profile
+                : profiles
             }
             onSelect={handleChangeProfile}
           />
@@ -192,36 +216,7 @@ export default function ProfileSelectorModal({ visible, setVisible }) {
             size="md"
             className="text-md"
             disabled={didVisibleNewProfile && !selectedProfileItem}
-            onClick={() => {
-              if (!didVisibleNewProfile) {
-                setDidVisibleNewProfile(true);
-              } else {
-                // handleCreateProfile
-                if (selectedProfileItem === undefined) {
-                  throw new Error(
-                    `Invalid profile item (profile item is undefined)`
-                  );
-                } else {
-                  // Check the profile name
-                  if (
-                    profileName === undefined ||
-                    selectedProfileItem === undefined
-                  ) {
-                    throw new Error(
-                      `The profile name or game version is not set`
-                    );
-                  }
-
-                  // Create a new profile and then set the value for that profile
-                  createProfile(profileName, selectedProfileItem.id).then(
-                    (response) => {
-                      // console.log(response);
-                      setProfile([...profile, response]);
-                    }
-                  );
-                }
-              }
-            }}
+            onClick={handleSubmitCreateNewProfile}
           >
             {!didVisibleNewProfile ? `New profile` : `Add profile`}
           </Button>

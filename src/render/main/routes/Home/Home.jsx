@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../components/Button/Button";
 import ProfileSelector from "../../components/ProfileSelector/ProfileSelector";
 import ProfileSelectorModal from "../../components/ProfileSelectorModal/ProfileSelectorModal";
+import { useDispatch } from "react-redux";
+import { setLastProfile, setProfiles } from "../../slices/AppSlice";
+import { useSelector } from "react-redux";
 
 export default function Home() {
   const [profileSelectorModalVisible, setProfileSelectorModalVisible] =
@@ -9,6 +12,24 @@ export default function Home() {
 
   const handleOpenProfileSelectorModal = () => {
     setProfileSelectorModalVisible(true);
+  };
+
+  const dispatch = useDispatch();
+  const latestProfileId = useSelector((state) => state.app.latestProfileId);
+
+  // Initial the profile
+  useEffect(() => {
+    window.profiles.getAllProfiles().then((profiles) => {
+      dispatch(setProfiles(profiles));
+
+      if (latestProfileId === undefined) {
+        dispatch(setLastProfile(profiles[0].id));
+      }
+    });
+  }, []);
+
+  const handleChangeProfile = ({ id, name, versionId }) => {
+    dispatch(setLastProfile(id));
   };
 
   return (
@@ -27,7 +48,10 @@ export default function Home() {
           </Button>
         </div>
         <div className="flex flex-col text-md justify-center">
-          <ProfileSelector onClick={handleOpenProfileSelectorModal} />
+          <ProfileSelector
+            // currentProfile={currentSelectedProfile}
+            onClick={handleOpenProfileSelectorModal}
+          />
           <p className="text-md font-bold">
             play as <b>Player_Nguyen</b>
           </p>
@@ -38,6 +62,7 @@ export default function Home() {
       <ProfileSelectorModal
         visible={profileSelectorModalVisible}
         setVisible={setProfileSelectorModalVisible}
+        onSelect={handleChangeProfile}
       />
     </div>
   );
