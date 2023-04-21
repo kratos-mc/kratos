@@ -124,6 +124,23 @@ function handleProfileListener() {
     // Trying to launch profile
     await launchProfile(getProfileManager().getProfile(profileId));
   });
+
+  ipcMain.handle(
+    "profile:search-profile",
+    async (_event, profileId: string) => {
+      if (profileId === undefined) {
+        throw new Error(`profileId cannot be undefined`);
+      }
+
+      // Check if the profile is exists or not, if not exist, return undefined
+      if (!getProfileManager().hasProfile(profileId)) {
+        return undefined;
+      }
+
+      // Otherwise return profile
+      return getProfileManager().getProfile(profileId);
+    }
+  );
 }
 
 function handleRuntimeListener() {

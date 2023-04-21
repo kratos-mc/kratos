@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld("profiles", {
     ipcRenderer.send("profile:delete-profile", profileId),
   launchProfile: (profileId: string) =>
     ipcRenderer.send("profile:launch-profile", profileId),
+  searchProfile: (profileId: string) =>
+    ipcRenderer.invoke("profile:search-profile", profileId),
 });
 
 contextBridge.exposeInMainWorld("runtime", {
