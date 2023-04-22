@@ -37,8 +37,7 @@ function AsideMenuItemButton({ text, icon, url }) {
   return (
     <Link
       className="px-6 py-3 dark:text-neutral-300 
-        hover:bg-opacity-60 dark:hover:bg-neutral-900
-        hover:text-blue-700
+        hover:bg-opacity-60 hover:text-blue-700
         transition-colors ease-in-out flex flex-row items-center"
       to={url}
     >
