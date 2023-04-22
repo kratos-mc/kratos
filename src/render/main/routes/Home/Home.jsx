@@ -32,6 +32,10 @@ export default function Home() {
     dispatch(setLastProfile(id));
   };
 
+  const handleLaunchProfile = () => {
+    window.profiles.launchProfile(latestProfileId);
+  };
+
   return (
     <div className="bg-neutral-100 h-[calc(100vh-32px)] rounded-t-xl relative">
       {/* Header */}
@@ -43,7 +47,12 @@ export default function Home() {
       {/* Footer */}
       <div className="bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 px-4 py-4 flex flex-row gap-4 sticky bottom-0 items-center">
         <div>
-          <Button level="primary" size="xl" className="px-5">
+          <Button
+            level="primary"
+            size="xl"
+            className="px-5"
+            onClick={handleLaunchProfile}
+          >
             Launch
           </Button>
         </div>
