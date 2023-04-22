@@ -1,6 +1,8 @@
 import { download } from "kratos-core";
 import { PromisePool } from "@supercharge/promise-pool";
 import { logger } from "./logger/logger";
+import { BrowserWindow } from "electron";
+import { IpcDictionary } from "./ipc";
 
 export class DownloadPool {
   private downloadProcessPool: PromisePool<
@@ -19,8 +21,17 @@ export class DownloadPool {
     this.processes.push(process);
   }
 
-  public async downloadAll() {
+  public async downloadAll(window?: BrowserWindow) {
     const stackProcess = [...this.processes];
+
+    if (window !== undefined) {
+      const downloadLength = stackProcess.length;
+
+      window.webContents.send(IpcDictionary.CREATE_DOWNLOAD, {
+        size: downloadLength,
+      });
+    }
+
     // stackProcess[0].startDownload();
     this.processes = [];
     await this.downloadProcessPool

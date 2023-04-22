@@ -69,7 +69,7 @@ function handleVersionListener(versionManager: version.VersionManager) {
   );
 }
 
-function handleProfileListener() {
+function handleProfileListener(browserManager: BrowserWindowManager) {
   ipcMain.handle("profile:get-all-profiles", (_e) => {
     return getProfileManager().getAllProfiles();
   });
@@ -206,7 +206,11 @@ export function loadIpcListener(
 
   handleVersionListener(versionManager);
 
-  handleProfileListener();
+  handleProfileListener(browserManager);
 
   handleRuntimeListener();
 }
+
+export const IpcDictionary = {
+  CREATE_DOWNLOAD: "download:create-download",
+};

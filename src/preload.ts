@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { IpcRendererEvent, contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("versions", {
   node: () => process.versions.node,
@@ -34,4 +34,21 @@ contextBridge.exposeInMainWorld("runtime", {
     ipcRenderer.send("runtime:download", major),
   getRuntime: (major: number) =>
     ipcRenderer.invoke("runtime:get-runtime", major),
+});
+
+function makeCalleeIpcRenderer(
+  channel: string,
+  listener: (...args: any[]) => void
+) {
+  const _internalListener = (_event: IpcRendererEvent, ...args) =>
+    listener(...args);
+  return [
+    () => ipcRenderer.on(channel, _internalListener),
+    () => ipcRenderer.removeListener(channel, _internalListener),
+  ];
+}
+
+contextBridge.exposeInMainWorld("download", {
+  onCreateDownload: (listener: (...args: [{ size: number }]) => void) =>
+    makeCalleeIpcRenderer("download:create-download", listener),
 });

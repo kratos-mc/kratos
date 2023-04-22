@@ -5,6 +5,8 @@ import ProfileSelectorModal from "../../components/ProfileSelectorModal/ProfileS
 import { useDispatch } from "react-redux";
 import { setLastProfile, setProfiles } from "../../slices/AppSlice";
 import { useSelector } from "react-redux";
+import classNames from "classnames";
+import DownloadIndicator from "../../components/DownloadIndicator/DownloadIndicator";
 
 export default function Home() {
   const [profileSelectorModalVisible, setProfileSelectorModalVisible] =
@@ -45,25 +47,31 @@ export default function Home() {
       {/* Body */}
       <div className="min-h-[80vh] overflow-y-scroll"></div>
       {/* Footer */}
-      <div className="bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 px-4 py-4 flex flex-row gap-4 sticky bottom-0 items-center">
-        <div>
-          <Button
-            level="primary"
-            size="xl"
-            className="px-5"
-            onClick={handleLaunchProfile}
-          >
-            Launch
-          </Button>
-        </div>
-        <div className="flex flex-col text-md justify-center">
-          <ProfileSelector
-            // currentProfile={currentSelectedProfile}
-            onClick={handleOpenProfileSelectorModal}
-          />
-          <p className="text-md font-bold">
-            play as <b>Player_Nguyen</b>
-          </p>
+      <div className="bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 px-4 py-2 flex flex-col gap-2 sticky bottom-0">
+        {/* DownloadIndicator */}
+        <DownloadIndicator />
+
+        {/*  */}
+        <div className="flex flex-row gap-4 items-center">
+          <div>
+            <Button
+              level="primary"
+              size="xl"
+              className="px-5"
+              onClick={handleLaunchProfile}
+            >
+              Launch
+            </Button>
+          </div>
+          <div className="flex flex-col text-md justify-center">
+            <ProfileSelector
+              // currentProfile={currentSelectedProfile}
+              onClick={handleOpenProfileSelectorModal}
+            />
+            <p className="text-md font-bold">
+              play as <b>Player_Nguyen</b>
+            </p>
+          </div>
         </div>
       </div>
 

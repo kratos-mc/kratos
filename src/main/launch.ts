@@ -4,6 +4,7 @@ import { download, version } from "kratos-core";
 import { logger } from "./logger/logger";
 import { Profile } from "./profile";
 import {
+  getBrowserWindowManager,
   getDownloadPool,
   getLauncherWorkspace,
   getNativesPath,
@@ -191,7 +192,9 @@ export async function resolveProfileAsset(
   );
 
   // Start downloading all assets
-  await getDownloadPool().downloadAll();
+  await getDownloadPool().downloadAll(
+    getBrowserWindowManager().getBrowserWindow("main")
+  );
 }
 
 /**
@@ -440,7 +443,9 @@ export async function resolveMainClass(profile: Profile) {
       );
     }
 
-    await getDownloadPool().downloadAll();
+    await getDownloadPool().downloadAll(
+      getBrowserWindowManager().getBrowserWindow("main")
+    );
     logger.info(`Successfully downloaded main client jar file.`);
     return destination;
   }
@@ -493,7 +498,9 @@ export async function resolveLoggingConfiguration(profile: Profile) {
     );
   }
 
-  await getDownloadPool().downloadAll();
+  await getDownloadPool().downloadAll(
+    getBrowserWindowManager().getBrowserWindow("main")
+  );
   return destination;
 }
 
