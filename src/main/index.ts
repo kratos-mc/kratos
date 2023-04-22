@@ -78,7 +78,8 @@ function loadMainBrowser() {
     frame: false,
     transparent: true,
     visualEffectState: "active",
-    titleBarStyle: "hidden",
+    // For windows or osx
+    titleBarStyle: isOsx() ? "hiddenInset" : "hidden",
     trafficLightPosition: {
       x: 12,
       y: 10,
@@ -86,20 +87,31 @@ function loadMainBrowser() {
     webPreferences: {
       preload: getAppPreload(),
     },
+    titleBarOverlay: true,
   });
   mainWindow.loadURL(getRenderAssetURL("index.html").toString());
   // mainWindow.loadFile("file://dist/render/index.html");
-  const themeSource = nativeTheme.themeSource;
+
   if (isWindows()) {
-    mainWindow.setTitleBarOverlay({
-      color: themeSource === "light" ? "#f5f5f5" : "#525252",
-    });
+    updateNativeTheme(mainWindow);
+
+    nativeTheme.on("updated", () => updateNativeTheme(mainWindow));
   }
   if (isOsx()) {
     mainWindow.setVibrancy("under-window");
-    // mainWindow.setEf
   }
   return mainWindow;
+}
+
+function updateNativeTheme(window: BrowserWindow) {
+  const { themeSource, shouldUseDarkColors } = nativeTheme;
+
+  window.setTitleBarOverlay({
+    color: !shouldUseDarkColors ? "#e5e5e5" : "#262626",
+    symbolColor: !shouldUseDarkColors ? "#262626" : "#e5e5e5",
+  });
+
+  window.setBackgroundColor(!shouldUseDarkColors ? "#e5e5e5" : "#262626");
 }
 
 /**
