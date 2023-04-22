@@ -51,4 +51,6 @@ function makeCalleeIpcRenderer(
 contextBridge.exposeInMainWorld("download", {
   onCreateDownload: (listener: (...args: [{ size: number }]) => void) =>
     makeCalleeIpcRenderer("download:create-download", listener),
+  onProgressDownload: (listener: () => void) =>
+    makeCalleeIpcRenderer("download:progress-download", listener),
 });

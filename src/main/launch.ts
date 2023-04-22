@@ -313,7 +313,9 @@ export async function resolveLibrary(profile: Profile) {
   const poolSize = getDownloadPool().getPendingItems().length;
   if (poolSize > 0) {
     logger.info(`Downloading ${poolSize} missing libraries`);
-    await getDownloadPool().downloadAll();
+    await getDownloadPool().downloadAll(
+      getBrowserWindowManager().getBrowserWindow("main")
+    );
     logger.info(`Successfully downloaded libraries`);
   } else {
     logger.info(`Successfully built libraries without any downloading`);

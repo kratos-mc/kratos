@@ -213,4 +213,5 @@ export function loadIpcListener(
 
 export const IpcDictionary = {
   CREATE_DOWNLOAD: "download:create-download",
+  PROGRESS_DOWNLOAD: "download:progress-download",
 };

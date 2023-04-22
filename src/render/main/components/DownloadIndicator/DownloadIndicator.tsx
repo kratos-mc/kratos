@@ -3,27 +3,50 @@ import React, { useEffect } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../stores/RenderStore";
-import { setDownloadingState } from "../../slices/DownloadSlice";
+import {
+  progressDownload,
+  setDownloadSize,
+  setDownloadedItemCount,
+  setDownloadingState,
+  setRemainingItemCount,
+} from "../../slices/DownloadSlice";
 
 export default function DownloadIndicator() {
-  const { isDownloading } = useSelector((state: RootState) => state.download);
+  const {
+    isDownloading,
+    downloadedItemCount,
+    remainingItemCount,
+    downloadSize,
+  } = useSelector((state: RootState) => state.download);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // console.log(`Successfully loading this`);
-
-    dispatch(setDownloadingState(false));
-
+    // dispatch(setDownloadingState(false));
+    // Handle when create a new download event
     const [onCreateDownloadHandler, cleanupCreateDownloadHandler] = (
       window as any
-    ).download.onCreateDownload((params) => {
-      console.log(params.size);
+    ).download.onCreateDownload(({ size }) => {
       // Visible the download progress
       dispatch(setDownloadingState(true));
+      // Set the downloading target size
+      dispatch(setRemainingItemCount(size));
+      dispatch(setDownloadSize(size));
+      dispatch(setDownloadedItemCount(0));
     });
     onCreateDownloadHandler();
+
+    // Handle when progress download
+    const [onProgressDownloadHandler, cleanupProgressDownloadHandler] = (
+      window as any
+    ).download.onProgressDownload((params) => {
+      // Call the progress on download
+      dispatch(progressDownload());
+    });
+    onProgressDownloadHandler();
+
     return () => {
       cleanupCreateDownloadHandler();
+      cleanupProgressDownloadHandler();
     };
   }, []);
 
@@ -31,7 +54,17 @@ export default function DownloadIndicator() {
     isDownloading && (
       <div className={classNames(`flex flex-col`)}>
         <span>Downloads: download-something</span>
-        <span className="w-full px-2 bg-neutral-400 h-1"></span>
+        <span>
+          {downloadedItemCount} / {downloadSize} (
+          {((downloadedItemCount / downloadSize) * 100).toFixed(2)}) remain:{" "}
+          {remainingItemCount}
+        </span>
+        <span className="w-full bg-neutral-400 h-1 relative">
+          <span
+            className={classNames(`absolute bg-blue-900 h-1`)}
+            style={{ width: `${(downloadedItemCount / downloadSize) * 100}%` }}
+          ></span>
+        </span>
       </div>
     )
   );

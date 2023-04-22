@@ -49,6 +49,12 @@ export class DownloadPool {
         );
 
         const _downloadInfo = await downloadProcess.startDownload();
+        if (window !== undefined) {
+          window.webContents.send(
+            IpcDictionary.PROGRESS_DOWNLOAD,
+            _downloadInfo
+          );
+        }
         // logger.info(`Successfully downloaded ${_downloadInfo.destination}`);
         return _downloadInfo;
       });
