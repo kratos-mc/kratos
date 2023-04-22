@@ -3,9 +3,14 @@ import { version } from "kratos-core";
 import { ipcMain } from "electron/main";
 import { BrowserWindowManager } from "./window";
 import { Profile, getProfileManager } from "./profile";
-import { getRuntimeWorkspace, getVersionManager } from "./app";
+import {
+  getLauncherWorkspace,
+  getRuntimeWorkspace,
+  getVersionManager,
+} from "./app";
 import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
+import { IpcMainEvent, shell } from "electron";
 
 function handleWindowListener(browserManager: BrowserWindowManager) {
   /**
@@ -37,6 +42,9 @@ function handleWindowListener(browserManager: BrowserWindowManager) {
     }
 
     loadingWindow.show();
+  });
+  ipcMain.on("util:open-launcher-dir", (_event: IpcMainEvent) => {
+    shell.openPath(getLauncherWorkspace().getDirectory().toString());
   });
 }
 

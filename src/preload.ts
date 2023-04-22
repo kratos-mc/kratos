@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld("versions", {
 contextBridge.exposeInMainWorld("utils", {
   openDevTools: (options?) => ipcRenderer.send("util:open-dev-tool", options),
   openLoadingWindow: () => ipcRenderer.send("util:open-loading-window"),
+  openLauncherDir: () => ipcRenderer.send("util:open-launcher-dir"),
 });
 
 contextBridge.exposeInMainWorld("profiles", {
