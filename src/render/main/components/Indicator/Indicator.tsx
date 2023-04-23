@@ -10,9 +10,9 @@ export default function Indicator() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const [handler, cleaner] = (window as any).indicator.update(
+    const [handler, cleaner] = (window as any).indicator.handleUpdate(
       (indicators: []) => {
-        console.log(indicators);
+        console.log(`Updating indicators: `, indicators);
         dispatch(setIndicators(indicators));
       }
     );
@@ -31,38 +31,38 @@ export default function Indicator() {
           indicators.map(
             ({
               id,
-              visible,
+              isVisible,
               text,
               subText,
               progress,
             }: {
               id: number;
-              visible: boolean;
+              isVisible: boolean;
               text: string;
               subText: string;
               progress?: number;
             }) => {
               if (progress !== undefined) {
-                return (
+                return isVisible ? (
                   <ProgressIndicator
                     key={id}
                     id={id}
                     text={text}
                     subText={subText}
-                    visible={visible}
+                    visible={isVisible}
                     progress={progress}
                   />
-                );
+                ) : null;
               }
-              return (
+              return isVisible ? (
                 <TextIndicator
                   key={id}
                   id={id}
-                  visible={visible}
+                  visible={isVisible}
                   text={text}
                   subText={subText}
                 />
-              );
+              ) : null;
             }
           )}
       </div>
