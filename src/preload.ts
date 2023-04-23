@@ -54,3 +54,35 @@ contextBridge.exposeInMainWorld("download", {
   onProgressDownload: (listener: () => void) =>
     makeCalleeIpcRenderer("download:progress-download", listener),
 });
+
+contextBridge.exposeInMainWorld(`indicator`, {
+  update: (listener: (indicators: []) => void) =>
+    makeCalleeIpcRenderer("indicator:update-indicators", listener),
+
+  createText: (text: string, subText: string) =>
+    ipcRenderer.send("indicator:create-indicator", text, subText),
+  createProgress: (text: string, subText?: string, progress?: number) =>
+    ipcRenderer.send(
+      "indicator:create-progress-indicator",
+      text,
+      subText,
+      progress
+    ),
+
+  updateTextIndicator: (id: number, text: string, subText?: string) =>
+    ipcRenderer.send("indicator:update-text-indicator", id, text, subText),
+
+  updateProgressIndicator: (
+    id: number,
+    progress: number,
+    text: string,
+    subText?: string
+  ) =>
+    ipcRenderer.send(
+      "indicator:update-progress-indicator",
+      id,
+      progress,
+      text,
+      subText
+    ),
+});

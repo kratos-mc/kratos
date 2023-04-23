@@ -11,6 +11,7 @@ import {
 import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
 import { IpcMainEvent, shell } from "electron";
+import { indicator } from "./indicator/indicator";
 
 function handleWindowListener(browserManager: BrowserWindowManager) {
   /**
@@ -209,6 +210,54 @@ export function loadIpcListener(
   handleProfileListener(browserManager);
 
   handleRuntimeListener();
+  handleIndicatorListener();
+}
+
+function handleIndicatorListener() {
+  ipcMain.on("indicator:create-indicator", (_e, text, subText) => {
+    indicator.createTextIndicator(text, subText);
+  });
+
+  ipcMain.on(
+    "indicator:create-progress-indicator",
+    (_e, text, subText, progress) => {
+      indicator.createProgressIndicator(text, subText, progress);
+    }
+  );
+
+  ipcMain.on(
+    "indicator:update-text-indicator",
+    (_e, id: number, text: string, subText: string) => {
+      if (id === undefined) {
+        throw new Error(`Indicator id cannot be undefined`);
+      }
+
+      if (text === undefined) {
+        throw new Error(`Indicator text cannot be undefined`);
+      }
+
+      indicator.setTextIndicator(id, text, subText);
+    }
+  );
+
+  ipcMain.on(
+    "indicator:update-progress-indicator",
+    (_e, id: number, progress: number, text: string, subText: string) => {
+      if (id === undefined) {
+        throw new Error(`Indicator id cannot be undefined`);
+      }
+
+      if (progress === undefined) {
+        throw new Error(`Indicator progress cannot be undefined`);
+      }
+
+      if (text === undefined) {
+        throw new Error(`Indicator text cannot be undefined`);
+      }
+
+      indicator.setProgressIndicator(id, progress, text, subText);
+    }
+  );
 }
 
 export const IpcDictionary = {
