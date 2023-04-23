@@ -7,6 +7,7 @@ import { setLastProfile, setProfiles } from "../../slices/AppSlice";
 import { useSelector } from "react-redux";
 import classNames from "classnames";
 import DownloadIndicator from "../../components/DownloadIndicator/DownloadIndicator";
+import Indicator from "../../components/Indicator/Indicator";
 
 export default function Home() {
   const [profileSelectorModalVisible, setProfileSelectorModalVisible] =
@@ -50,6 +51,7 @@ export default function Home() {
       <div className="bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300 px-4 py-2 flex flex-col gap-2 sticky bottom-0">
         {/* DownloadIndicator */}
         <DownloadIndicator />
+        <Indicator />
 
         {/*  */}
         <div className="flex flex-row gap-4 items-center">

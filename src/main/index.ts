@@ -60,7 +60,7 @@ app.whenReady().then(async () => {
   // Load an IPC main register
   logger.info("Initializing ipc");
   loadIpcListener(getBrowserWindowManager(), getVersionManager());
-  
+
   initialWindow();
 
   // After finish all of this, hide loading
