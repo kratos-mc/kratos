@@ -190,4 +190,24 @@ export module indicator {
     setTextIndicator(id, text || "", subText);
     updateIndicators();
   }
+
+  export function showIndicator(id: number) {
+    const indicator = indicators.get(id);
+    if (indicator === undefined) {
+      throw new Error(`Indicator not found (id: ${id})`);
+    }
+
+    indicator.show();
+    updateIndicators();
+  }
+
+  export function hideIndicator(id: number) {
+    const indicator = indicators.get(id);
+    if (indicator === undefined) {
+      throw new Error(`Indicator not found (id: ${id})`);
+    }
+
+    indicator.hide();
+    updateIndicators();
+  }
 }

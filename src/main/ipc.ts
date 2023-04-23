@@ -214,14 +214,14 @@ export function loadIpcListener(
 }
 
 function handleIndicatorListener() {
-  ipcMain.on("indicator:create-indicator", (_e, text, subText) => {
-    indicator.createTextIndicator(text, subText);
+  ipcMain.handle("indicator:create-indicator", (_e, text, subText) => {
+    return indicator.createTextIndicator(text, subText);
   });
 
-  ipcMain.on(
+  ipcMain.handle(
     "indicator:create-progress-indicator",
     (_e, text, subText, progress) => {
-      indicator.createProgressIndicator(text, subText, progress);
+      return indicator.createProgressIndicator(text, subText, progress);
     }
   );
 
@@ -258,6 +258,18 @@ function handleIndicatorListener() {
       indicator.setProgressIndicator(id, progress, text, subText);
     }
   );
+
+  ipcMain.on(`indicator:show`, (_event, id: number) => {
+    indicator.showIndicator(id);
+  });
+
+  ipcMain.on(`indicator:hide`, (_event, id: number) => {
+    indicator.hideIndicator(id);
+  });
+
+  ipcMain.on(`indicator:dispose`, (_event, id: number) => {
+    indicator.disposeIndicator(id);
+  });
 }
 
 export const IpcDictionary = {

@@ -56,13 +56,13 @@ contextBridge.exposeInMainWorld("download", {
 });
 
 contextBridge.exposeInMainWorld(`indicator`, {
-  update: (listener: (indicators: []) => void) =>
+  handleUpdate: (listener: (indicators: []) => void) =>
     makeCalleeIpcRenderer("indicator:update-indicators", listener),
 
   createText: (text: string, subText: string) =>
-    ipcRenderer.send("indicator:create-indicator", text, subText),
+    ipcRenderer.invoke("indicator:create-indicator", text, subText),
   createProgress: (text: string, subText?: string, progress?: number) =>
-    ipcRenderer.send(
+    ipcRenderer.invoke(
       "indicator:create-progress-indicator",
       text,
       subText,
@@ -85,4 +85,27 @@ contextBridge.exposeInMainWorld(`indicator`, {
       text,
       subText
     ),
+  /**
+   * Shows the indicator which is invisible.
+   *
+   * @param id the id of indicator to invisible
+   * @returns the event of `ipcRenderer.send("indicator:show")`
+   */
+  show: (id: number) => ipcRenderer.send("indicator:show", id),
+  /**
+   * Hides the indicator.
+   * NOTE: The hidden indicator is cached in main process until disposed.
+   *
+   * @param id the id of indicator to invisible
+   * @returns the event of `ipcRenderer.send("indicator:hide")`
+   */
+  hide: (id: number) => ipcRenderer.send("indicator:hide", id),
+
+  /**
+   * Disposes the indicators.The disposed indicator will be destroyed by runtime GC.
+   *
+   * @param id the id to dispose the indicator
+   * @returns the event of `ipcRenderer.send("indicator:dispose")`
+   */
+  disposeIndicator: (id: number) => ipcRenderer.send("indicator:dispose", id),
 });
