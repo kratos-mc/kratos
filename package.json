@@ -39,7 +39,12 @@
           "^/test",
           "^/gitignore",
           "^/.mocharc.json",
-          "^/yarn-error.log"
+          "^/yarn-error.log",
+          "^/tailwind.config.js",
+          "^/*.log",
+          "^/.postcssrc",
+          "^/.github",
+          "^/.gitignore"
         ]
       },
       "makers": [
