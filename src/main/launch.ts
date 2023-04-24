@@ -4,6 +4,7 @@ import { download, version } from "kratos-core";
 import { logger } from "./logger/logger";
 import { Profile } from "./profile";
 import {
+  getBrowserWindowManager,
   getDownloadPool,
   getLauncherWorkspace,
   getNativesPath,
@@ -191,7 +192,9 @@ export async function resolveProfileAsset(
   );
 
   // Start downloading all assets
-  await getDownloadPool().downloadAll();
+  await getDownloadPool().downloadAll(
+    getBrowserWindowManager().getBrowserWindow("main")
+  );
 }
 
 /**
@@ -310,7 +313,9 @@ export async function resolveLibrary(profile: Profile) {
   const poolSize = getDownloadPool().getPendingItems().length;
   if (poolSize > 0) {
     logger.info(`Downloading ${poolSize} missing libraries`);
-    await getDownloadPool().downloadAll();
+    await getDownloadPool().downloadAll(
+      getBrowserWindowManager().getBrowserWindow("main")
+    );
     logger.info(`Successfully downloaded libraries`);
   } else {
     logger.info(`Successfully built libraries without any downloading`);
@@ -440,7 +445,9 @@ export async function resolveMainClass(profile: Profile) {
       );
     }
 
-    await getDownloadPool().downloadAll();
+    await getDownloadPool().downloadAll(
+      getBrowserWindowManager().getBrowserWindow("main")
+    );
     logger.info(`Successfully downloaded main client jar file.`);
     return destination;
   }
@@ -493,7 +500,9 @@ export async function resolveLoggingConfiguration(profile: Profile) {
     );
   }
 
-  await getDownloadPool().downloadAll();
+  await getDownloadPool().downloadAll(
+    getBrowserWindowManager().getBrowserWindow("main")
+  );
   return destination;
 }
 

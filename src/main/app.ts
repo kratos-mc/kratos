@@ -7,12 +7,14 @@ import { existsSync, readJson } from "fs-extra";
 import { kratosRuntime } from "kratos-runtime-resolver";
 import { DownloadPool } from "./downloadPool";
 import { pathToFileURL, format } from "url";
+import { Indicator, indicator } from "./indicator/indicator";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
 let globalVersionManager: version.VersionManager;
 let globalDownloadPool: DownloadPool;
 let globalRuntimeWorkspace: kratosRuntime.RuntimeWorkspace;
+let globalDownloadIndicator: Indicator;
 
 export function isDevelopment() {
   return process.env.NODE_ENV === "development";
@@ -176,4 +178,16 @@ export function isLinux() {
 
 export function getNativesPath() {
   return path.join(getLauncherWorkspace().getDirectory().toString(), "natives");
+}
+
+export function getDownloadIndicator() {
+  if (globalDownloadIndicator === undefined) {
+    globalDownloadIndicator = indicator.createProgressIndicator(
+      "Downloading",
+      "<item here>",
+      0
+    );
+    indicator.hideIndicator(globalDownloadIndicator.getId());
+  }
+  return globalDownloadIndicator;
 }

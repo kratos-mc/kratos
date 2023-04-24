@@ -5,6 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Loading</title>
+    <link rel="stylesheet" href="./import-tailwind.css" />
+    <link rel="stylesheet" href="./load/loading.css" />
   </head>
-  <body></body>
+  <body>
+    <div
+      class="loading-wrapper dark:text-neutral-300 dark:bg-neutral-900 text-neutral-900 bg-neutral-100 w-full h-full top-0 left-0 fixed flex flex-col items-center justify-center gap-2"
+    >
+      <div class="loading-text">
+        <b>Initializing </b>
+      </div>
+      <div
+        class="loading-progress-bar h-2 w-2/3 rounded bg-neutral-900 dark:bg-neutral-300 px-1 py-1 animate-pulse"
+      ></div>
+    </div>
+    <!-- <script type="module" src="./load/index.js"></script> -->
+  </body>
 </html>

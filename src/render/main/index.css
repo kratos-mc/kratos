@@ -1,0 +1,13 @@
+@font-face {
+  font-family: "Alata";
+  src: url(../fonts/alata.ttf);
+}
+
+body {
+  font-family: "Alata";
+}
+
+.draggable-area {
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
