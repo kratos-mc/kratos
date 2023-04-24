@@ -3,9 +3,15 @@ import { version } from "kratos-core";
 import { ipcMain } from "electron/main";
 import { BrowserWindowManager } from "./window";
 import { Profile, getProfileManager } from "./profile";
-import { getRuntimeWorkspace, getVersionManager } from "./app";
+import {
+  getLauncherWorkspace,
+  getRuntimeWorkspace,
+  getVersionManager,
+} from "./app";
 import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
+import { IpcMainEvent, shell } from "electron";
+import { indicator } from "./indicator/indicator";
 
 function handleWindowListener(browserManager: BrowserWindowManager) {
   /**
@@ -38,6 +44,9 @@ function handleWindowListener(browserManager: BrowserWindowManager) {
 
     loadingWindow.show();
   });
+  ipcMain.on("util:open-launcher-dir", (_event: IpcMainEvent) => {
+    shell.openPath(getLauncherWorkspace().getDirectory().toString());
+  });
 }
 
 function handleVersionListener(versionManager: version.VersionManager) {
@@ -61,7 +70,7 @@ function handleVersionListener(versionManager: version.VersionManager) {
   );
 }
 
-function handleProfileListener() {
+function handleProfileListener(browserManager: BrowserWindowManager) {
   ipcMain.handle("profile:get-all-profiles", (_e) => {
     return getProfileManager().getAllProfiles();
   });
@@ -198,7 +207,72 @@ export function loadIpcListener(
 
   handleVersionListener(versionManager);
 
-  handleProfileListener();
+  handleProfileListener(browserManager);
 
   handleRuntimeListener();
+  handleIndicatorListener();
 }
+
+function handleIndicatorListener() {
+  ipcMain.handle("indicator:create-indicator", (_e, text, subText) => {
+    return indicator.createTextIndicator(text, subText);
+  });
+
+  ipcMain.handle(
+    "indicator:create-progress-indicator",
+    (_e, text, subText, progress) => {
+      return indicator.createProgressIndicator(text, subText, progress);
+    }
+  );
+
+  ipcMain.on(
+    "indicator:update-text-indicator",
+    (_e, id: number, text: string, subText: string) => {
+      if (id === undefined) {
+        throw new Error(`Indicator id cannot be undefined`);
+      }
+
+      if (text === undefined) {
+        throw new Error(`Indicator text cannot be undefined`);
+      }
+
+      indicator.setTextIndicator(id, text, subText);
+    }
+  );
+
+  ipcMain.on(
+    "indicator:update-progress-indicator",
+    (_e, id: number, progress: number, text: string, subText: string) => {
+      if (id === undefined) {
+        throw new Error(`Indicator id cannot be undefined`);
+      }
+
+      if (progress === undefined) {
+        throw new Error(`Indicator progress cannot be undefined`);
+      }
+
+      if (text === undefined) {
+        throw new Error(`Indicator text cannot be undefined`);
+      }
+
+      indicator.setProgressIndicator(id, progress, text, subText);
+    }
+  );
+
+  ipcMain.on(`indicator:show`, (_event, id: number) => {
+    indicator.showIndicator(id);
+  });
+
+  ipcMain.on(`indicator:hide`, (_event, id: number) => {
+    indicator.hideIndicator(id);
+  });
+
+  ipcMain.on(`indicator:dispose`, (_event, id: number) => {
+    indicator.disposeIndicator(id);
+  });
+}
+
+export const IpcDictionary = {
+  CREATE_DOWNLOAD: "download:create-download",
+  PROGRESS_DOWNLOAD: "download:progress-download",
+};

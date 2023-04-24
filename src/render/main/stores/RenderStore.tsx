@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import AppSlice from "../slices/AppSlice";
+import DownloadSlice from "../slices/DownloadSlice";
+import IndicatorSlice from "../slices/IndicatorSlice";
 
 export const store = configureStore({
   reducer: {
     app: AppSlice,
+    download: DownloadSlice,
+    indicators: IndicatorSlice,
   },
 });
 
