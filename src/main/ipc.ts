@@ -2,7 +2,7 @@ import { kratosRuntime } from "kratos-runtime-resolver";
 import { version } from "kratos-core";
 import { ipcMain } from "electron/main";
 import { BrowserWindowManager } from "./window";
-import { Profile, getProfileManager } from "./profile";
+import { getProfileManager } from "./profile";
 import {
   getLauncherWorkspace,
   getRuntimeWorkspace,
@@ -12,6 +12,7 @@ import { logger } from "./logger/logger";
 import { launchProfile } from "./launch";
 import { IpcMainEvent, shell } from "electron";
 import { indicator } from "./indicator/indicator";
+import { account } from "./accounts/account";
 
 function handleWindowListener(browserManager: BrowserWindowManager) {
   /**
@@ -211,6 +212,8 @@ export function loadIpcListener(
 
   handleRuntimeListener();
   handleIndicatorListener();
+
+  handleAccountsListener();
 }
 
 function handleIndicatorListener() {
@@ -269,6 +272,13 @@ function handleIndicatorListener() {
 
   ipcMain.on(`indicator:dispose`, (_event, id: number) => {
     indicator.disposeIndicator(id);
+  });
+}
+
+function handleAccountsListener() {
+  ipcMain.handle("account:get-accounts", () => {
+    // Return a list of accounts from memory
+    return account.getAccounts();
   });
 }
 

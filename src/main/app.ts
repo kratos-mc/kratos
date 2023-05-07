@@ -8,6 +8,7 @@ import { kratosRuntime } from "kratos-runtime-resolver";
 import { DownloadPool } from "./downloadPool";
 import { pathToFileURL, format } from "url";
 import { Indicator, indicator } from "./indicator/indicator";
+import { account } from "./accounts/account";
 
 let globalLauncherWorkspace: workspace.LauncherWorkspace;
 let globalWindowManager: BrowserWindowManager;
@@ -190,4 +191,9 @@ export function getDownloadIndicator() {
     indicator.hideIndicator(globalDownloadIndicator.getId());
   }
   return globalDownloadIndicator;
+}
+
+export function loadAccounts() {
+  // Load the file if the file is not available
+  account.initAccountFile();
 }

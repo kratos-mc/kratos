@@ -109,3 +109,9 @@ contextBridge.exposeInMainWorld(`indicator`, {
    */
   disposeIndicator: (id: number) => ipcRenderer.send("indicator:dispose", id),
 });
+
+contextBridge.exposeInMainWorld("account", {
+  getAccounts: () => {
+    return ipcRenderer.invoke("account:get-accounts");
+  },
+});
