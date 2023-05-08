@@ -27,8 +27,8 @@ function App() {
     return () => {};
   });
   useEffect(() => {
-    window.account.getAccounts()
-  }, [])
+    window.indicator
+  }, []);
 
   return (
     <HashRouter>
