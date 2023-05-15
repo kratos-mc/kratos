@@ -21,11 +21,12 @@ export default function DownloadIndicator() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // dispatch(setDownloadingState(false));
+    dispatch(setDownloadingState(false));
     // Handle when create a new download event
-    const [onCreateDownloadHandler, cleanupCreateDownloadHandler] = (
-      window as any
-    ).download.onCreateDownload(({ size }) => {
+    const {
+      listener: onCreateDownloadHandler,
+      cleaner: cleanupCreateDownloadHandler,
+    } = window.download.onCreateDownload(({ size }) => {
       // Visible the download progress
       dispatch(setDownloadingState(true));
       // Set the downloading target size
@@ -34,14 +35,15 @@ export default function DownloadIndicator() {
       dispatch(setDownloadedItemCount(0));
     });
     onCreateDownloadHandler();
-
     // Handle when progress download
-    const [onProgressDownloadHandler, cleanupProgressDownloadHandler] = (
-      window as any
-    ).download.onProgressDownload((params) => {
+    const {
+      listener: onProgressDownloadHandler,
+      cleaner: cleanupProgressDownloadHandler,
+    } = window.download.onProgressDownload(() => {
       // Call the progress on download
       dispatch(progressDownload());
     });
+
     onProgressDownloadHandler();
 
     return () => {

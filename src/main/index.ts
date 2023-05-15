@@ -1,5 +1,4 @@
 import { app, BrowserWindow, nativeTheme } from "electron";
-import { Menu } from "electron/main";
 import * as path from "path";
 import {
   getAppPreload,
@@ -11,6 +10,7 @@ import {
   isDevelopment,
   isOsx,
   isWindows,
+  loadAccounts,
   loadGameManifest,
 } from "./app";
 import { loadIpcListener } from "./ipc";
@@ -40,6 +40,8 @@ app.whenReady().then(async () => {
     const { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } = devInstaller;
     await devInstaller.default([REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS]);
   }
+  // Load account file
+  await loadAccounts();
   // Load game manifest
   await loadGameManifest();
 

@@ -7,15 +7,22 @@ interface Profile {
   versionId: string;
 }
 
+interface Account {
+  getId(): string;
+  getName: string;
+}
+
 interface AppState {
   latestProfileId?: string;
   profiles: Profile[];
+  accounts: Account[];
 }
 
 // console.log(localStorage.getItem(LATEST_PROFILE_ID_KEY) || undefined);
 const initialState: AppState = {
   latestProfileId: localStorage.getItem(LATEST_PROFILE_ID_KEY) || undefined,
   profiles: [],
+  accounts: [],
 };
 
 const App = createSlice({
@@ -37,9 +44,13 @@ const App = createSlice({
       // Set this into local storage
       localStorage.setItem(LATEST_PROFILE_ID_KEY, payload.payload);
     },
+
+    setAccounts: (state, action) => {
+      state.accounts = action.payload;
+    },
   },
 });
 
-export const { setProfiles, setLastProfile } = App.actions;
+export const { setProfiles, setLastProfile, setAccounts } = App.actions;
 
 export default App.reducer;

@@ -10,12 +10,12 @@ export default function Indicator() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const [handler, cleaner] = (window as any).indicator.handleUpdate(
-      (indicators: []) => {
-        console.log(`Updating indicators: `, indicators);
-        dispatch(setIndicators(indicators));
-      }
-    );
+    const { listener: handler, cleaner } = (
+      window as any
+    ).indicator.handleUpdate((indicators: []) => {
+      console.log(`Updating indicators: `, indicators);
+      dispatch(setIndicators(indicators));
+    });
     handler();
 
     return () => {
