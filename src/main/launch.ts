@@ -27,6 +27,7 @@ import {
   hasNativesLibrary,
 } from "./library";
 import { getLoggingConfigPath } from "./loggingConfig";
+import { account } from "./accounts/account";
 
 export async function launchProfile(profile: Profile) {
   // If the profile was not found
@@ -76,7 +77,10 @@ export async function launchProfile(profile: Profile) {
   const args = [
     ...jvmArgs,
     mainClassName,
-    ...(await buildGameArguments(profile, "PlayerNguyen")),
+    ...(await buildGameArguments(
+      profile,
+      account.getAccounts()[0].getName().toString()
+    )),
   ];
   // logger.info(args);
   spawnJavaProcess(majorEntry.major, args);

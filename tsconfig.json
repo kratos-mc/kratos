@@ -11,10 +11,8 @@
       "*": ["node_modules/*"]
     },
     "target": "ESNext",
-    "typeRoots": [
-      "./node_modules/@types",
-      "src/render/preload.d.ts",
-      "./typings"
-    ]
+    "typeRoots": ["./node_modules/@types", "./types"],
+    "declaration": true,
+    "declarationDir": "./types"
   }
 }

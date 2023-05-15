@@ -19,6 +19,7 @@ export default function Home() {
 
   const dispatch = useDispatch();
   const latestProfileId = useSelector((state) => state.app.latestProfileId);
+  const [primaryUsername] = useSelector((state) => state.app.accounts);
 
   // Initial the profile
   useEffect(() => {
@@ -71,7 +72,10 @@ export default function Home() {
               onClick={handleOpenProfileSelectorModal}
             />
             <p className="text-md font-bold">
-              play as <b>Player_Nguyen</b>
+              play as{" "}
+              <b className={classNames(`text-blue-600`)}>
+                {primaryUsername && primaryUsername.name}
+              </b>
             </p>
           </div>
         </div>

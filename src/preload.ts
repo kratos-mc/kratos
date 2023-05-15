@@ -15,6 +15,10 @@ export module PreloadAPI {
      * @returns an array list of accounts that can be zero-indexes.
      */
     getAccounts: () => Promise<account.Account[]>;
+
+    createAccount: (username: string) => Promise<string>;
+
+    deleteAccount: (id: string) => void;
   }
   export interface PreloadUtils {
     /**
@@ -250,4 +254,9 @@ contextBridge.exposeInMainWorld("account", {
   getAccounts: () => {
     return ipcRenderer.invoke("account:get-accounts");
   },
+
+  createAccount: (username: string) =>
+    ipcRenderer.invoke("account:create-account", username),
+
+  deleteAccount: (id: string) => ipcRenderer.send("account:delete-account", id),
 });

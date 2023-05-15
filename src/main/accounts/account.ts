@@ -37,8 +37,12 @@ export module account {
     if (!fse.existsSync(ACCOUNT_FILE_PATH)) {
       throw new Error(`Invalid account file or not saved`);
     }
+    let sanityParsedAccount = fse.readJSONSync(ACCOUNT_FILE_PATH) as {
+      id: string;
+      name: string;
+    }[];
 
-    return fse.readJSONSync(ACCOUNT_FILE_PATH) as Account[];
+    return sanityParsedAccount.map(({ name, id }) => new Account(name, id));
   }
 
   export function getAccounts() {
@@ -61,6 +65,8 @@ export module account {
 
     // Save the list of accounts
     saveAccounts();
+
+    return account.getId();
   }
 
   export function initAccountFile() {
@@ -68,5 +74,12 @@ export module account {
       globalAccounts = [];
       saveAccounts();
     }
+  }
+
+  export function deleteAccount(id: string) {
+    // Update the global account
+    globalAccounts = globalAccounts.filter((account) => account.getId() !== id);
+    // Store the data
+    saveAccounts();
   }
 }

@@ -6,11 +6,11 @@ interface ButtonProps
     React.ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   > {
-  size: "xs" | "sm" | "md" | "xl";
-  level: "primary" | "danger" | "success" | "warning";
-  className: string;
-  children: string;
-  props: object;
+  size?: "xs" | "sm" | "md" | "xl";
+  level?: "primary" | "danger" | "success" | "warning";
+  className?: string;
+  children?: string;
+  props?: object;
 }
 
 export default function Button({
